@@ -102,7 +102,8 @@ void	print_node(t_stack *stack_a, t_stack *stack_b)
 
 	node_a = stack_a->top;
 	node_b = stack_b->top;
-	ft_printf("\nnode->count = {%d}\n", stack_a->count);
+	ft_printf("\nstack_a = {%d}\n", stack_a->count);
+	ft_printf("stack_b = {%d}\n", stack_b->count);
 	while (node_a || node_b)
 	{
 		if (node_a)
@@ -174,8 +175,8 @@ void	op_reverse_rotate(t_stack *stack)
 	stack->bott->next = stack->top;
 	stack->top = stack->bott;
 	stack->bott = node;
-	ft_printf("top->data = {%d}\n", stack->top->data);
-	ft_printf("bott->data = {%d}\n", stack->bott->data);
+	//ft_printf("top->data = {%d}\n", stack->top->data);
+	//ft_printf("bott->data = {%d}\n", stack->bott->data);
 }
 
 void	op_push(t_stack *one, t_stack *two)
@@ -188,11 +189,8 @@ void	op_push(t_stack *one, t_stack *two)
 	one->top = one->top->next;
 	one->count--;
 	node->next = two->top;
-	ft_putendl("111");
-	two->top->next = node;
-	ft_putendl("111");
+	two->top = node;
 	two->count++;
-	ft_putendl("111");
 }
 
 void	operations(t_ps *ps)
@@ -204,6 +202,14 @@ void	operations(t_ps *ps)
 	op_reverse_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
 	op_push(&ps->stack_a, &ps->stack_b);
+	print_node(&ps->stack_a, &ps->stack_b);
+	op_push(&ps->stack_a, &ps->stack_b);
+	print_node(&ps->stack_a, &ps->stack_b);
+	op_push(&ps->stack_a, &ps->stack_b);
+	print_node(&ps->stack_a, &ps->stack_b);
+	op_push(&ps->stack_b, &ps->stack_a);
+	print_node(&ps->stack_a, &ps->stack_b);
+	op_push(&ps->stack_b, &ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
