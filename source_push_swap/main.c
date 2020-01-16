@@ -8,6 +8,10 @@ void	init(t_ps *ps)
 	ps->stack_b.top = NULL;
 	ps->stack_b.bott = NULL;
 	ps->stack_b.count = 0;
+	ps->mid[0] = 0;
+	ps->mid[1] = 0;
+	ps->mid[2] = 0;
+	ps->mid[3] = 0;
 }
 
 void		check_arg(char *arg)
@@ -65,6 +69,7 @@ t_node	*create_node(int data, size_t *count)
 		sys_err("Error malloc\n");
 	node->next = NULL;	
 	node->data = data;
+	node->number = *count;
 	(*count)++;
 	return (node);
 }
@@ -121,15 +126,43 @@ void	print_node(t_stack *stack_a, t_stack *stack_b)
 	}
 }
 
-void	infill_stack(t_ps *ps, char **av)
+void	print_sort_arr(t_ps *ps)
+{
+	int *arr;
+	int i;
+
+	i = -1;
+	arr = ps->sotr_arr;
+	ft_printf("Sort arr [%d]\n", ps->count_arr);
+	while (++i < ps->count_arr)
+		ft_printf("%d\n", arr[i]);
+}
+
+char	**working_args(int ac, char **av, int *count_arr)
+{
+	
+	return (0);
+}
+void	infill_stack(t_ps *ps, int ac, char **av)
 {
 	int num;
+	int i;
+	//char **arg;
 
-	while (*(++av) != '\0')
+	i = -1;
+	//arg = working_args(ac, av, &ps->count_arr);
+	ps->count_arr = ac - 1;
+	if (!(ps->sotr_arr = (int*)malloc(sizeof(int) * (ac - 1))))
+		sys_err("Error malloc.\n");
+	while (*av != '\0')
 	{
 		check_arg(*av);
-		add_node(ps, check_number(*av));
+		num = check_number(*av);
+		add_node(ps, num);
+		ps->sotr_arr[++i] = num;
+		av++;
 	}
+	print_sort_arr(ps);
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -213,6 +246,92 @@ void	operations(t_ps *ps)
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
+void	count_steps(t_ps *ps)
+{
+	
+}
+
+void	algoritm(t_ps *ps)
+{
+	while (ps->stack_a.count != 0)
+	{
+
+		
+	}
+}
+
+void	bable_sort(t_ps *ps)
+{
+	int i;
+	int j;
+	int tmp;
+
+	i = -1;
+	while (++i < ps->count_arr)
+	{
+		j = -1;
+		while (++j < ps->count_arr - 1)
+		{
+			if (ps->sotr_arr[i] < ps->sotr_arr[j])
+			{
+				tmp = ps->sotr_arr[i];
+				ps->sotr_arr[i] = ps->sotr_arr[j];
+				ps->sotr_arr[j] = tmp;
+			}
+		}
+	}
+	print_sort_arr(ps);
+}
+
+void	infill_mid_value(t_ps *ps)
+{
+	int ind;
+
+	ind = ps->stack_a.count / 2;
+	if (ps->stack_a.count < 4)
+		sys_err("Fooooo");
+	ps->mid[0] = ps->sotr_arr[ind - 2];
+	ft_printf("mid[0] a = {%d}\n", ps->mid[0]);
+	ps->mid[1] = ps->sotr_arr[ind - 1];
+	ft_printf("mid[1] c = {%d}\n", ps->mid[1]);
+	ps->mid[2] = ps->sotr_arr[ind];
+	ft_printf("mid[2] m = {%d}\n", ps->mid[2]);
+	ps->mid[3] = ps->sotr_arr[ind + 1];
+	ft_printf("mid[3] c = {%d}\n", ps->mid[3]);
+}
+
+void	dell_arr(char ***arr)
+{
+	int i;
+
+	i = -1;
+	if (arr == NULL)
+		return ;
+	if (*arr == NULL)
+		return ;
+	if (**arr == NULL)
+		return ;
+	while (arr[0][++i] != NULL)
+		ft_strdel(&arr[0][i]);
+	free(*arr);
+}
+
+void	processing_args(t_ps *ps, int ac, char **av)
+{
+	char	**args;
+	int		count_args;
+
+	if (ac > 2)
+		infill_stack(ps, ac, av + 1);
+	else
+	{
+		args = ft_strsplit(av[1], ' ');
+		count_args = ft_numwr(av[1], ' ');
+		infill_stack(ps, count_args + 1, args);
+		dell_arr(&args);
+	}
+}
+
 int		main(int ac, char **av)
 {
 	t_ps	ps;
@@ -220,7 +339,10 @@ int		main(int ac, char **av)
 	if (ac < 2)
 		sys_err("To few arguments.\n");
 	init(&ps);
-	infill_stack(&ps, av);
-	operations(&ps);
+	processing_args(&ps, ac, av);
+	bable_sort(&ps);
+	infill_mid_value(&ps);
+	//operations(&ps);
+	algoritm(&ps);
 	return (0);
 }

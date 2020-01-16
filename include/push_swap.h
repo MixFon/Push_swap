@@ -7,6 +7,7 @@
 typedef struct		s_node
 {
 	int				data;
+	size_t			number;
 	struct s_node	*next;
 }					t_node;
 
@@ -21,6 +22,9 @@ typedef struct		s_ps
 {
 	t_stack			stack_a;
 	t_stack			stack_b;
+	int				*sotr_arr;
+	int				count_arr;
+	int				mid[4];
 }					t_ps;
 
 #endif
