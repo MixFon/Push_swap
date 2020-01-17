@@ -1,0 +1,61 @@
+Sort arr [9]
+5
+8
+0
+7
+9
+4
+3
+2
+1
+
+stack_a = {9}
+stack_b = {0}
+{5}	{ }
+{8}	{ }
+{0}	{ }
+{7}	{ }
+{9}	{ }
+{4}	{ }
+{3}	{ }
+{2}	{ }
+{1}	{ }
+Sort arr [9]
+0
+1
+2
+3
+4
+5
+7
+8
+9
+mid[0] a = {3}
+mid[1] c = {4}
+mid[2] m = {5}
+------------------------------------------------
+steps mid[0] [3] = {4}
+steps mid[1] [4] = {5}
+steps mid[2] [5] = {1}
+min steps mid[2] [5] = {1}
+item {2}
+steps_to_top {0}
+push
+item {1}
+steps_to_top {-3}
+reverse rotate
+reverse rotate
+reverse rotate
+reverse rotate
+push
+swap
+
+stack_a = {7}
+stack_b = {2}
+{3}	{5}
+{2}	{4}
+{1}	{ }
+{8}	{ }
+{0}	{ }
+{7}	{ }
+{9}	{ }

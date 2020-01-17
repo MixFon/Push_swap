@@ -18,13 +18,19 @@ typedef struct		s_stack
 	size_t			count;
 }					t_stack;
 
+typedef struct		s_mid
+{
+	int				item;
+	int				num_item_sort;
+}					t_mid;
+
 typedef struct		s_ps
 {
 	t_stack			stack_a;
 	t_stack			stack_b;
 	int				*sotr_arr;
 	int				count_arr;
-	int				mid[4];
+	t_mid			mid[3];
 }					t_ps;
 
 #endif

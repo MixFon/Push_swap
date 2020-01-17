@@ -8,10 +8,12 @@ void	init(t_ps *ps)
 	ps->stack_b.top = NULL;
 	ps->stack_b.bott = NULL;
 	ps->stack_b.count = 0;
-	ps->mid[0] = 0;
-	ps->mid[1] = 0;
-	ps->mid[2] = 0;
-	ps->mid[3] = 0;
+	ps->mid[0].item = 0;
+	ps->mid[1].item = 0;
+	ps->mid[2].item = 0;
+	ps->mid[0].num_item_sort = 0;
+	ps->mid[1].num_item_sort = 0;
+	ps->mid[2].num_item_sort = 0;
 }
 
 void		check_arg(char *arg)
@@ -50,8 +52,7 @@ int		check_number(char *arg)
 	{
 		data = data * 10 + (*arg - '0');
 		arg++;
-		i++;
-	}
+		i++; }
 	data *= bl;
 	if (i > 10 || data > INT_MAX || data < INT_MIN || i == 0)
 	{
@@ -116,7 +117,7 @@ void	print_node(t_stack *stack_a, t_stack *stack_b)
 		else
 			ft_printf("{%c}\t", ' ');
 		if (node_b)
-			ft_printf("{%d}\n", node_b->data);
+			ft_printf("{%d}\n",node_b->data);
 		else
 			ft_printf("{%c}\n", ' ');
 		if (node_a)
@@ -138,19 +139,12 @@ void	print_sort_arr(t_ps *ps)
 		ft_printf("%d\n", arr[i]);
 }
 
-char	**working_args(int ac, char **av, int *count_arr)
-{
-	
-	return (0);
-}
 void	infill_stack(t_ps *ps, int ac, char **av)
 {
 	int num;
 	int i;
-	//char **arg;
 
 	i = -1;
-	//arg = working_args(ac, av, &ps->count_arr);
 	ps->count_arr = ac - 1;
 	if (!(ps->sotr_arr = (int*)malloc(sizeof(int) * (ac - 1))))
 		sys_err("Error malloc.\n");
@@ -166,10 +160,23 @@ void	infill_stack(t_ps *ps, int ac, char **av)
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
+void	recount_number_stack(t_node *node)
+{
+	size_t	number;
+
+	number = -1;
+	while (node)
+	{
+		node->number = ++number;
+		node = node->next;
+	}
+}
+
 void	op_swap(t_stack *stack)
 {
 	t_node *node;
 
+	ft_putendl("swap");
 	if (stack->count < 2)
 		return ;
 	node = stack->top->next;
@@ -184,6 +191,7 @@ void	op_rotate(t_stack *stack)
 {
 	t_node *node;
 
+	ft_putendl("rotate");
 	if (stack->count < 2)
 		return ;
 	node = stack->top;
@@ -191,14 +199,13 @@ void	op_rotate(t_stack *stack)
 	stack->bott->next = node;
 	stack->bott = node;
 	node->next = NULL;
-	//ft_printf("top->data = {%d}\n", stack->top->data);
-	//ft_printf("bott->data = {%d}\n", stack->bott->data);
 }
 
 void	op_reverse_rotate(t_stack *stack)
 {
 	t_node *node;
 
+	ft_putendl("reverse rotate");
 	if (stack->count < 2)
 		return ;
 	node = stack->top;
@@ -208,14 +215,13 @@ void	op_reverse_rotate(t_stack *stack)
 	stack->bott->next = stack->top;
 	stack->top = stack->bott;
 	stack->bott = node;
-	//ft_printf("top->data = {%d}\n", stack->top->data);
-	//ft_printf("bott->data = {%d}\n", stack->bott->data);
 }
 
 void	op_push(t_stack *one, t_stack *two)
 {
 	t_node *node;
 
+	ft_putendl("push");
 	if (one->count == 0)
 		return ;
 	node = one->top;
@@ -224,6 +230,8 @@ void	op_push(t_stack *one, t_stack *two)
 	node->next = two->top;
 	two->top = node;
 	two->count++;
+	if (two->count == 1)
+		two->bott = two->top;
 }
 
 void	operations(t_ps *ps)
@@ -246,17 +254,161 @@ void	operations(t_ps *ps)
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
-void	count_steps(t_ps *ps)
+int		count_steps_to_top(t_ps *ps, int i)
 {
-	
+	t_node *node;
+	int		res;
+
+	res = 0;
+	node = ps->stack_a.top;
+	while (node)
+	{
+		if (node->data == ps->mid[i].item)
+		{
+			if (node->number <= ps->stack_a.count / 2) 
+				res = node->number;
+			else
+				res = (ps->stack_a.count - node->number) * (-1);
+			return (res);
+		}
+		node = node->next;
+	}
+	return (-1);
+}
+
+int		count_steps(t_ps *ps, int i)
+{
+	int to_top;
+
+	to_top = count_steps_to_top(ps, i);
+	if (to_top < 0)
+		to_top = to_top * (-1);
+	if (i == 0 || ps->stack_b.count == 0)
+		return (to_top + 1);
+	return (to_top + 2);
+}
+
+int		item_to_move(t_ps *ps)
+{
+	int item;
+	int steps;
+	int	tmp;
+	int i;
+
+	i = 0;
+	steps = count_steps(ps, i);
+	item = i;
+	ft_printf("steps mid[%d] [%d] = {%d}\n", i, ps->mid[i], steps);
+	while (++i < 3)
+	{
+		tmp = count_steps(ps, i);
+		ft_printf("steps mid[%d] [%d] = {%d}\n", i, ps->mid[i], tmp);
+		if (tmp < steps)
+		{
+			steps = tmp;
+			item = i;
+		}
+	}
+	ft_printf("min steps mid[%d] [%d] = {%d}\n", item, ps->mid[item], steps);
+	return (item);
+}
+
+void	move_item_to_top(t_ps *ps, int item)
+{
+	int steps_to_top;
+
+	ft_printf("item {%d}\n", item);
+	steps_to_top = count_steps_to_top(ps, item);
+	ft_printf("steps_to_top {%d}\n", steps_to_top);
+	if (steps_to_top >= 0)
+		while (ps->stack_a.top->data != ps->mid[item].item)
+			op_rotate(&ps->stack_a);
+	else
+		while (ps->stack_a.top->data != ps->mid[item].item)
+			op_reverse_rotate(&ps->stack_a);
+//	print_node(&ps->stack_a, &ps->stack_b);
+}
+
+void	move_item(t_ps *ps, int num_item)
+{
+	move_item_to_top(ps, num_item);
+	if (num_item == 0)
+	{
+		op_push(&ps->stack_a, &ps->stack_b);
+		op_rotate(&ps->stack_b);
+		//print_node(&ps->stack_a, &ps->stack_b);
+	}
+	else if (num_item == 1)
+		op_push(&ps->stack_a, &ps->stack_b);
+	else if (num_item == 2)
+	{
+		op_push(&ps->stack_a, &ps->stack_b);
+		move_item_to_top(ps, 1);
+		op_push(&ps->stack_a, &ps->stack_b);
+		op_swap(&ps->stack_b);
+	}
+	recount_number_stack(ps->stack_a.top);
+	recount_number_stack(ps->stack_b.top);
+	print_node(&ps->stack_a, &ps->stack_b);
+}
+
+void	recount_number_item_to_bott(t_ps *ps)
+{
+	ps->mid[0].num_item_sort++;
+	ps->mid[0].item = ps->sotr_arr[ps->mid[0].num_item_sort];
+	ps->mid[1].num_item_sort++;
+	ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
+	ps->mid[2].num_item_sort++;
+	ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+}
+
+void	recount_number_item(t_ps *ps, int num_item)
+{
+	static int	bl = 0;
+
+	if (bl == 1)
+		recount_number_item_to_bott(ps);
+	else if (num_item == 0)
+	{
+		ps->mid[num_item].num_item_sort--;
+		if (ps->mid[num_item].num_item_sort == -1)
+		{
+			bl = 1;
+			ps->mid[0].num_item_sort = ps->mid[1].num_item_sort - 1;
+			recount_number_item_to_bott(ps);
+		}
+		else
+			ps->mid[0].item = ps->sotr_arr[ps->mid[0].num_item_sort];
+	}
+	else if (num_item == 1)
+	{
+		ps->mid[1].num_item_sort++;
+		ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
+		ps->mid[2].num_item_sort++;
+		ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+	}
+	else if (num_item == 2)
+	{
+		ps->mid[1].num_item_sort += 2;
+		ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
+		ps->mid[2].num_item_sort += 2;
+		ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+	}
+	ft_printf("num_item_sort {%d} = [%d]\n", 0, ps->mid[0].num_item_sort);
+	ft_printf("num_item_sort {%d} = [%d]\n", 1, ps->mid[1].num_item_sort);
+	ft_printf("num_item_sort {%d} = [%d]\n", 2, ps->mid[2].num_item_sort);
 }
 
 void	algoritm(t_ps *ps)
 {
-	while (ps->stack_a.count != 0)
-	{
+	int num_item;
 
-		
+	while (ps->stack_a.count > 3)
+	{
+		ft_putendl("------------------------------------------------");
+		num_item = item_to_move(ps);
+		move_item(ps, num_item);
+		recount_number_item(ps, num_item);
 	}
 }
 
@@ -288,16 +440,17 @@ void	infill_mid_value(t_ps *ps)
 	int ind;
 
 	ind = ps->stack_a.count / 2;
-	if (ps->stack_a.count < 4)
-		sys_err("Fooooo");
-	ps->mid[0] = ps->sotr_arr[ind - 2];
+	if (ps->stack_a.count < 3)
+		sys_err("Fooooo\n");
+	ps->mid[0].item = ps->sotr_arr[ind - 1];
+	ps->mid[0].num_item_sort = ind - 1;
 	ft_printf("mid[0] a = {%d}\n", ps->mid[0]);
-	ps->mid[1] = ps->sotr_arr[ind - 1];
+	ps->mid[1].item = ps->sotr_arr[ind];
+	ps->mid[1].num_item_sort = ind;
 	ft_printf("mid[1] c = {%d}\n", ps->mid[1]);
-	ps->mid[2] = ps->sotr_arr[ind];
+	ps->mid[2].item = ps->sotr_arr[ind + 1];
+	ps->mid[2].num_item_sort = ind + 1;
 	ft_printf("mid[2] m = {%d}\n", ps->mid[2]);
-	ps->mid[3] = ps->sotr_arr[ind + 1];
-	ft_printf("mid[3] c = {%d}\n", ps->mid[3]);
 }
 
 void	dell_arr(char ***arr)
