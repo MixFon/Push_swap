@@ -178,7 +178,6 @@ void	op_swap(t_stack *stack)
 {
 	t_node *node;
 
-	ft_putendl("swap");
 	if (stack->count < 2)
 		return ;
 	node = stack->top->next;
@@ -193,7 +192,6 @@ void	op_rotate(t_stack *stack)
 {
 	t_node *node;
 
-	ft_putendl("rotate");
 	if (stack->count < 2)
 		return ;
 	node = stack->top;
@@ -207,7 +205,6 @@ void	op_reverse_rotate(t_stack *stack)
 {
 	t_node *node;
 
-	ft_putendl("reverse rotate");
 	if (stack->count < 2)
 		return ;
 	node = stack->top;
@@ -223,7 +220,6 @@ void	op_push(t_stack *one, t_stack *two)
 {
 	t_node *node;
 
-	ft_putendl("push");
 	if (one->count == 0)
 		return ;
 	node = one->top;
@@ -234,6 +230,75 @@ void	op_push(t_stack *one, t_stack *two)
 	two->count++;
 	if (two->count == 1)
 		two->bott = two->top;
+}
+
+void	op_pa(t_ps *ps)
+{
+	op_push(&ps->stack_b, &ps->stack_a);
+	ft_putendl("pa");
+}
+
+void	op_pb(t_ps *ps)
+{
+	op_push(&ps->stack_a, &ps->stack_b);
+	ft_putendl("pb");
+}
+
+void	op_ra(t_ps *ps)
+{
+	op_rotate(&ps->stack_a);
+	ft_putendl("ra");
+}
+
+void	op_rb(t_ps *ps)
+{
+	op_rotate(&ps->stack_b);
+	ft_putendl("rb");
+}
+
+void	op_rr(t_ps *ps)
+{
+	op_rotate(&ps->stack_a);
+	op_rotate(&ps->stack_b);
+	ft_putendl("rr");
+}
+
+void	op_rra(t_ps *ps)
+{
+	op_reverse_rotate(&ps->stack_a);
+	ft_putendl("rra");
+}
+
+void	op_rrb(t_ps *ps)
+{
+	op_reverse_rotate(&ps->stack_b);
+	ft_putendl("rb");
+}
+
+void	op_rrr(t_ps *ps)
+{
+	op_reverse_rotate(&ps->stack_a);
+	op_reverse_rotate(&ps->stack_b);
+	ft_putendl("rrr");
+}
+
+void	op_sa(t_ps *ps)
+{
+	op_swap(&ps->stack_a);
+	ft_putendl("sa");
+}
+
+void	op_sb(t_ps *ps)
+{
+	op_swap(&ps->stack_b);
+	ft_putendl("sb");
+}
+
+void	op_ss(t_ps *ps)
+{
+	op_swap(&ps->stack_a);
+	op_swap(&ps->stack_b);
+	ft_putendl("ss");
 }
 
 void	operations(t_ps *ps)
@@ -321,13 +386,10 @@ void	move_item_to_top(t_ps *ps, int item)
 	ft_printf("steps_to_top {%d}\n", steps_to_top);
 	if (steps_to_top >= 0)
 		while (ps->stack_a.top->data != ps->mid[item].item)
-			op_rotate(&ps->stack_a);
+			op_ra(ps);
 	else
 		while (ps->stack_a.top->data != ps->mid[item].item)
-		{
-			op_reverse_rotate(&ps->stack_a);
-			//print_node(&ps->stack_a, &ps->stack_b);
-		}
+			op_rra(ps);
 //	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -336,32 +398,24 @@ void	move_item(t_ps *ps, int num_item)
 	move_item_to_top(ps, num_item);
 	if (num_item == 0)
 	{
-		op_push(&ps->stack_a, &ps->stack_b);
-		op_rotate(&ps->stack_b);
+		op_pb(ps);
+		op_rb(ps);
+		//op_push(&ps->stack_a, &ps->stack_b);
+		//op_rotate(&ps->stack_b);
 		//print_node(&ps->stack_a, &ps->stack_b);
 	}
 	else if (num_item == 1)
-		op_push(&ps->stack_a, &ps->stack_b);
+		op_pb(ps);
 	else if (num_item == 2)
 	{
-		op_push(&ps->stack_a, &ps->stack_b);
+		op_pb(ps);
 		move_item_to_top(ps, 1);
-		op_push(&ps->stack_a, &ps->stack_b);
-		op_swap(&ps->stack_b);
+		op_pb(ps);
+		op_sb(ps);
 	}
 	recount_number_stack(ps->stack_a.top);
 	recount_number_stack(ps->stack_b.top);
 	print_node(&ps->stack_a, &ps->stack_b);
-}
-
-void	recount_number_item_to_bott(t_ps *ps)
-{
-	ps->mid[0].num_item_sort++;
-	ps->mid[0].item = ps->sotr_arr[ps->mid[0].num_item_sort];
-	ps->mid[1].num_item_sort++;
-	ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
-	ps->mid[2].num_item_sort++;
-	ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
 }
 
 void	recount_number_item(t_ps *ps, int num_item)
@@ -403,17 +457,239 @@ void	recount_number_item(t_ps *ps, int num_item)
 	ft_printf("num_item_sort {%d} = [%d]\n", 2, ps->mid[2].num_item_sort);
 }
 
+void	move_all_to_stack_a(t_ps *ps)
+{
+	while (ps->stack_b.count > 0)
+		op_pa(ps);
+}
+
+void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
+{
+	if (stack->top->data < stack->top->next->data &&
+			stack->top->next->data < stack->bott->data)
+	{
+		ft_putendl("11");
+		move_all_to_stack_a(ps);
+		return ;
+	}
+	else if (stack->bott->data > stack->top->data &&
+			stack->bott->data < stack->top->next->data)
+	{
+		ft_putendl("22");
+		op_rra(ps);
+		op_sa(ps);
+	}
+	else if (stack->top->data > stack->top->next->data &&
+			stack->top->data < stack->bott->data)
+	{
+		ft_putendl("33");
+		op_sa(ps);
+	}
+	else if (stack->top->data < stack->top->next->data &&
+			stack->top->data > stack->bott->data)
+	{
+		ft_putendl("44");
+		op_rra(ps);
+	}
+	else if (stack->bott->data > stack->top->next->data &&
+			stack->bott->data < stack->top->data)
+	{
+		ft_putendl("55");
+		op_ra(ps);
+	}
+	else if (stack->top->next->data < stack->top->data &&
+			stack->top->next->data > stack->bott->data)
+	{
+		ft_putendl("66");
+		op_sa(ps);
+		op_rra(ps);
+	}
+	move_all_to_stack_a(ps);
+}
+
+void	sort_three_elemts_top(t_ps *ps, t_stack *stack)
+{
+	if (stack->bott->data > stack->top->next->data &&
+			stack->bott->data < stack->top->data)
+	{
+		ft_putendl("111");
+		move_all_to_stack_a(ps);
+		op_rra(ps);
+		op_rra(ps);
+		return ;
+	}
+	else if (stack->top->next->data < stack->top->data &&
+			stack->top->next->data > stack->bott->data)
+	{
+		ft_putendl("222");
+		op_rra(ps);
+		op_sa(ps);
+	}
+	else if (stack->top->data < stack->bott->data &&
+			stack->top->next->data > stack->bott->data)
+	{
+		ft_putendl("333");
+		op_sa(ps);
+	}
+	else if (stack->top->data < stack->top->next->data &&
+			stack->top->next->data < stack->bott->data)
+	{
+		ft_putendl("444");
+		op_rra(ps);
+	}
+	else if (stack->top->data > stack->top->next->data &&
+			stack->top->data < stack->bott->data)
+	{
+		ft_putendl("555");
+		op_ra(ps);
+		op_sa(ps);
+	}
+	else if (stack->top->data < stack->top->next->data &&
+			stack->top->data > stack->bott->data)
+	{
+		ft_putendl("666");
+		op_ra(ps);
+	}
+	move_all_to_stack_a(ps);
+	op_rra(ps);
+	op_rra(ps);
+}
+
+void	sort_three_elemts(t_ps *ps, t_stack *stack)
+{
+	if (stack->top->data < stack->top->next->data &&
+			stack->top->data > stack->bott->data)
+	{
+		ft_putendl("1");
+		move_all_to_stack_a(ps);
+		op_rra(ps);
+		return ;
+	}
+	else if (stack->top->data > stack->top->next->data &&
+			stack->top->data < stack->bott->data)
+	{
+		ft_putendl("2");
+		op_rra(ps);
+		op_sa(ps);
+	}
+	else if (stack->top->data > stack->top->next->data &&
+			stack->top->next->data > stack->bott->data)
+	{
+		ft_putendl("3");
+		op_sa(ps);
+	}
+	else if (stack->bott->data > stack->top->next->data &&
+			stack->bott->data < stack->top->data)
+	{
+		ft_putendl("4");
+		op_rra(ps);
+	}
+	else if (stack->bott->data < stack->top->next->data &&
+			stack->bott->data > stack->top->data)
+	{
+		ft_putendl("5");
+		op_ra(ps);
+		op_sa(ps);
+	}
+	else if (stack->top->data < stack->top->next->data &&
+			stack->bott->data > stack->top->next->data)
+	{
+		ft_putendl("6");
+		op_ra(ps);
+	}
+	move_all_to_stack_a(ps);
+	op_rra(ps);
+}
+
+void	sort_three_elemts_extra(t_ps *ps, t_stack *stack)
+{
+	if (stack->top->data > stack->top->next->data &&
+			stack->top->next->data > stack->bott->data)
+	{
+		ft_putendl("1111");
+		move_all_to_stack_a(ps);
+		op_rra(ps);
+		op_rra(ps);
+		op_rra(ps);
+		return ;
+	}
+	else if (stack->bott->data < stack->top->data &&
+			stack->bott->data > stack->top->next->data)
+	{
+		ft_putendl("2222");
+		op_sa(ps);
+		op_ra(ps);
+	}
+	else if (stack->top->data < stack->top->next->data &&
+			stack->top->data > stack->bott->data)
+	{
+		ft_putendl("3333");
+		op_sa(ps);
+	}
+	else if (stack->top->data > stack->top->next->data &&
+			stack->top->data < stack->bott->data)
+	{
+		ft_putendl("4444");
+		op_rra(ps);
+	}
+	else if (stack->bott->data < stack->top->next->data &&
+			stack->bott->data > stack->top->data)
+	{
+		ft_putendl("5555");
+		op_ra(ps);
+	}
+	else if (stack->top->next->data > stack->top->data &&
+			stack->top->next->data < stack->bott->data)
+	{
+		ft_putendl("6666");
+		op_sa(ps);
+		op_rra(ps);
+	}
+	move_all_to_stack_a(ps);
+	op_rra(ps);
+	op_rra(ps);
+	op_rra(ps);
+}
+
+void	final_sort(t_ps *ps)
+{
+	print_node(&ps->stack_a, &ps->stack_b);
+	ft_printf("ps->only_bott = [%d] ps->only_top = [%d]\n",
+			ps->only_bott, ps->only_top);
+	if (ps->stack_b.top->data == ps->sotr_arr[ps->count_arr - 1])
+	{
+		ft_putendl("@@@@");
+		sort_three_elemts_bott(ps, &ps->stack_a);
+		op_rra(ps);
+		op_rra(ps);
+		op_rra(ps);
+	}
+	else if(ps->only_bott == 1)
+		sort_three_elemts_bott(ps, &ps->stack_a);
+	else if (ps->only_top == 1)
+		sort_three_elemts_top(ps, &ps->stack_a);
+	else
+		sort_three_elemts(ps, &ps->stack_a);
+
+	//print_node(&ps->stack_a, &ps->stack_b);
+	//move_all_to_stack_a(ps);
+	//op_rra(ps);
+	//op_rra(ps);
+}
+
 void	algoritm(t_ps *ps)
 {
 	int num_item;
 
-		while (ps->stack_a.count > 3)
+	while (ps->stack_a.count > 3)
 	{
 		ft_putendl("------------------------------------------------");
 		num_item = item_to_move(ps);
 		move_item(ps, num_item);
 		recount_number_item(ps, num_item);
 	}
+	final_sort(ps);
+	print_node(&ps->stack_a, &ps->stack_b);
 }
 
 void	bable_sort(t_ps *ps)
