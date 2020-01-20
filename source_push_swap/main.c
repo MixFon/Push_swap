@@ -8,6 +8,8 @@ void	init(t_ps *ps)
 	ps->stack_b.top = NULL;
 	ps->stack_b.bott = NULL;
 	ps->stack_b.count = 0;
+	ps->only_top = 0;
+	ps->only_top = 0;
 	ps->mid[0].item = 0;
 	ps->mid[1].item = 0;
 	ps->mid[2].item = 0;
@@ -156,7 +158,7 @@ void	infill_stack(t_ps *ps, int ac, char **av)
 		ps->sotr_arr[++i] = num;
 		av++;
 	}
-	print_sort_arr(ps);
+	//print_sort_arr(ps);
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -236,21 +238,14 @@ void	op_push(t_stack *one, t_stack *two)
 
 void	operations(t_ps *ps)
 {
-	op_swap(&ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
 	op_reverse_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
-	op_push(&ps->stack_a, &ps->stack_b);
+	op_reverse_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
-	op_push(&ps->stack_a, &ps->stack_b);
+	op_reverse_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
-	op_push(&ps->stack_a, &ps->stack_b);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_push(&ps->stack_b, &ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_push(&ps->stack_b, &ps->stack_a);
+	op_reverse_rotate(&ps->stack_a);
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -296,8 +291,12 @@ int		item_to_move(t_ps *ps)
 	int i;
 
 	i = 0;
-	steps = count_steps(ps, i);
+	if (ps->only_top == 1)
+		return (0);
+	else if (ps->only_bott == 1)
+		i++;
 	item = i;
+	steps = count_steps(ps, i);
 	ft_printf("steps mid[%d] [%d] = {%d}\n", i, ps->mid[i], steps);
 	while (++i < 3)
 	{
@@ -325,7 +324,10 @@ void	move_item_to_top(t_ps *ps, int item)
 			op_rotate(&ps->stack_a);
 	else
 		while (ps->stack_a.top->data != ps->mid[item].item)
+		{
 			op_reverse_rotate(&ps->stack_a);
+			//print_node(&ps->stack_a, &ps->stack_b);
+		}
 //	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -364,35 +366,37 @@ void	recount_number_item_to_bott(t_ps *ps)
 
 void	recount_number_item(t_ps *ps, int num_item)
 {
-	static int	bl = 0;
-
-	if (bl == 1)
-		recount_number_item_to_bott(ps);
-	else if (num_item == 0)
+	if (num_item == 0)
 	{
-		ps->mid[num_item].num_item_sort--;
-		if (ps->mid[num_item].num_item_sort == -1)
-		{
-			bl = 1;
-			ps->mid[0].num_item_sort = ps->mid[1].num_item_sort - 1;
-			recount_number_item_to_bott(ps);
-		}
+		ps->mid[0].num_item_sort--;
+		if (ps->mid[0].num_item_sort == -1)
+			ps->only_bott = 1;
 		else
 			ps->mid[0].item = ps->sotr_arr[ps->mid[0].num_item_sort];
 	}
 	else if (num_item == 1)
 	{
 		ps->mid[1].num_item_sort++;
-		ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
 		ps->mid[2].num_item_sort++;
-		ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+		if (ps->mid[2].num_item_sort > ps->count_arr - 1)
+			ps->only_top = 1;
+		else
+		{
+			ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
+			ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+		}
 	}
 	else if (num_item == 2)
 	{
 		ps->mid[1].num_item_sort += 2;
-		ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
 		ps->mid[2].num_item_sort += 2;
-		ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+		if (ps->mid[2].num_item_sort > ps->count_arr - 1)
+			ps->only_top = 1;
+		else
+		{
+			ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
+			ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
+		}
 	}
 	ft_printf("num_item_sort {%d} = [%d]\n", 0, ps->mid[0].num_item_sort);
 	ft_printf("num_item_sort {%d} = [%d]\n", 1, ps->mid[1].num_item_sort);
@@ -403,7 +407,7 @@ void	algoritm(t_ps *ps)
 {
 	int num_item;
 
-	while (ps->stack_a.count > 3)
+		while (ps->stack_a.count > 3)
 	{
 		ft_putendl("------------------------------------------------");
 		num_item = item_to_move(ps);
@@ -447,10 +451,10 @@ void	infill_mid_value(t_ps *ps)
 	ft_printf("mid[0] a = {%d}\n", ps->mid[0]);
 	ps->mid[1].item = ps->sotr_arr[ind];
 	ps->mid[1].num_item_sort = ind;
-	ft_printf("mid[1] c = {%d}\n", ps->mid[1]);
+	ft_printf("mid[1] b = {%d}\n", ps->mid[1]);
 	ps->mid[2].item = ps->sotr_arr[ind + 1];
 	ps->mid[2].num_item_sort = ind + 1;
-	ft_printf("mid[2] m = {%d}\n", ps->mid[2]);
+	ft_printf("mid[2] c = {%d}\n", ps->mid[2]);
 }
 
 void	dell_arr(char ***arr)
