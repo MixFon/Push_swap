@@ -5,9 +5,13 @@ void	init(t_ps *ps)
 	ps->stack_a.top = NULL;
 	ps->stack_a.bott = NULL;
 	ps->stack_a.count = 0;
+	ps->stack_a.bl_ss = 0;
+	ps->stack_a.bl_rr = 0;
 	ps->stack_b.top = NULL;
 	ps->stack_b.bott = NULL;
 	ps->stack_b.count = 0;
+	ps->stack_b.bl_ss = 0;
+	ps->stack_b.bl_rr = 0;
 	ps->only_top = 0;
 	ps->only_top = 0;
 	ps->mid[0].item = 0;
@@ -54,7 +58,8 @@ int		check_number(char *arg)
 	{
 		data = data * 10 + (*arg - '0');
 		arg++;
-		i++; }
+		i++;
+	}
 	data *= bl;
 	if (i > 10 || data > INT_MAX || data < INT_MIN || i == 0)
 	{
@@ -377,7 +382,53 @@ int		item_to_move(t_ps *ps)
 	return (item);
 }
 
-void	move_item_to_top(t_ps *ps, int item)
+void	to_top_with_rr(t_ps *ps)
+{
+	if (ps->stack_b.bl_rr == 1)
+	{
+		op_rr(ps);
+		ps->stack_b.bl_rr = 0;
+	}
+	else
+		op_ra(ps);
+}
+
+void	to_top_with_ss(t_ps *ps, int item, int bl)
+{
+	if (ps->stack_a.top->next->data == ps->mid[item].item && bl)
+	{
+		if (ps->stack_b.bl_ss == 1)
+		{
+			op_ss(ps);
+			ps->stack_b.bl_ss = 0;
+		}
+		else
+		{
+			//ft_putendl("a111111111111111111111111111111111111a");
+			//kop_sb(ps);
+			to_top_with_rr(ps);
+		}
+	}
+	else
+		to_top_with_rr(ps);
+		//op_ra(ps);
+}
+
+void	inser_ss_rr(t_ps *ps)
+{
+	if (ps->stack_b.bl_ss == 1)
+	{
+		op_sb(ps);
+		ps->stack_b.bl_ss = 0;
+	}
+	if (ps->stack_b.bl_rr == 1)
+	{
+		op_rb(ps);
+		ps->stack_b.bl_rr = 0;
+	}
+}
+
+void	move_item_to_top(t_ps *ps, int item, int bl)
 {
 	int steps_to_top;
 
@@ -386,32 +437,32 @@ void	move_item_to_top(t_ps *ps, int item)
 	ft_printf("steps_to_top {%d}\n", steps_to_top);
 	if (steps_to_top >= 0)
 		while (ps->stack_a.top->data != ps->mid[item].item)
-			op_ra(ps);
+			to_top_with_ss(ps, item, bl);
 	else
 		while (ps->stack_a.top->data != ps->mid[item].item)
 			op_rra(ps);
+	inser_ss_rr(ps);
 //	print_node(&ps->stack_a, &ps->stack_b);
 }
 
 void	move_item(t_ps *ps, int num_item)
 {
-	move_item_to_top(ps, num_item);
+	move_item_to_top(ps, num_item, 1);
 	if (num_item == 0)
 	{
 		op_pb(ps);
-		op_rb(ps);
-		//op_push(&ps->stack_a, &ps->stack_b);
-		//op_rotate(&ps->stack_b);
-		//print_node(&ps->stack_a, &ps->stack_b);
+		ps->stack_b.bl_rr = 1;
+		//op_rb(ps);
 	}
 	else if (num_item == 1)
 		op_pb(ps);
 	else if (num_item == 2)
 	{
 		op_pb(ps);
-		move_item_to_top(ps, 1);
+		move_item_to_top(ps, 1, 0);
 		op_pb(ps);
-		op_sb(ps);
+		ps->stack_b.bl_ss = 1;
+		//op_sb(ps);
 	}
 	recount_number_stack(ps->stack_a.top);
 	recount_number_stack(ps->stack_b.top);
@@ -495,7 +546,7 @@ void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
 			stack->bott->data < stack->top->data)
 	{
 		ft_putendl("55");
-		op_ra(ps);
+		to_top_with_rr(ps);
 	}
 	else if (stack->top->next->data < stack->top->data &&
 			stack->top->next->data > stack->bott->data)
@@ -541,14 +592,14 @@ void	sort_three_elemts_top(t_ps *ps, t_stack *stack)
 			stack->top->data < stack->bott->data)
 	{
 		ft_putendl("555");
-		op_ra(ps);
+		to_top_with_rr(ps);
 		op_sa(ps);
 	}
 	else if (stack->top->data < stack->top->next->data &&
 			stack->top->data > stack->bott->data)
 	{
 		ft_putendl("666");
-		op_ra(ps);
+		to_top_with_rr(ps);
 	}
 	move_all_to_stack_a(ps);
 	op_rra(ps);
@@ -588,75 +639,78 @@ void	sort_three_elemts(t_ps *ps, t_stack *stack)
 			stack->bott->data > stack->top->data)
 	{
 		ft_putendl("5");
-		op_ra(ps);
+		to_top_with_rr(ps);
 		op_sa(ps);
 	}
 	else if (stack->top->data < stack->top->next->data &&
 			stack->bott->data > stack->top->next->data)
 	{
 		ft_putendl("6");
-		op_ra(ps);
+		to_top_with_rr(ps);
 	}
 	move_all_to_stack_a(ps);
 	op_rra(ps);
 }
 
-void	sort_three_elemts_extra(t_ps *ps, t_stack *stack)
+void	sort_two_elemts(t_ps *ps, t_stack *stack)
 {
-	if (stack->top->data > stack->top->next->data &&
-			stack->top->next->data > stack->bott->data)
+	ft_putendl("!!!!");
+	if (stack->top->data == ps->sotr_arr[ps->count_arr - 1] && 
+			stack->top->next->data == ps->sotr_arr[0])
 	{
-		ft_putendl("1111");
+		ft_putendl("11111");
+		move_all_to_stack_a(ps);
+		op_rra(ps);
+	}
+	else if (stack->top->data == ps->sotr_arr[0] && 
+			stack->top->next->data == ps->sotr_arr[ps->count_arr - 1])
+	{
+		ft_putendl("22222");
+		op_sa(ps);
+		move_all_to_stack_a(ps);
+		op_rra(ps);
+	}
+	else if (stack->top->data == ps->sotr_arr[1] && 
+			stack->top->next->data == ps->sotr_arr[0])
+	{
+		ft_putendl("33333");
+		op_sa(ps);
 		move_all_to_stack_a(ps);
 		op_rra(ps);
 		op_rra(ps);
+	}
+	else if (stack->top->data == ps->sotr_arr[0] && 
+			stack->top->next->data == ps->sotr_arr[1])
+	{
+		ft_putendl("44444");
+		move_all_to_stack_a(ps);
 		op_rra(ps);
-		return ;
-	}
-	else if (stack->bott->data < stack->top->data &&
-			stack->bott->data > stack->top->next->data)
-	{
-		ft_putendl("2222");
-		op_sa(ps);
-		op_ra(ps);
-	}
-	else if (stack->top->data < stack->top->next->data &&
-			stack->top->data > stack->bott->data)
-	{
-		ft_putendl("3333");
-		op_sa(ps);
-	}
-	else if (stack->top->data > stack->top->next->data &&
-			stack->top->data < stack->bott->data)
-	{
-		ft_putendl("4444");
 		op_rra(ps);
 	}
-	else if (stack->bott->data < stack->top->next->data &&
-			stack->bott->data > stack->top->data)
+	else if (stack->top->data == ps->sotr_arr[ps->count_arr - 1] && 
+			stack->top->next->data == ps->sotr_arr[ps->count_arr - 2])
 	{
-		ft_putendl("5555");
-		op_ra(ps);
-	}
-	else if (stack->top->next->data > stack->top->data &&
-			stack->top->next->data < stack->bott->data)
-	{
-		ft_putendl("6666");
+		ft_putendl("55555");
 		op_sa(ps);
-		op_rra(ps);
+		move_all_to_stack_a(ps);
 	}
-	move_all_to_stack_a(ps);
-	op_rra(ps);
-	op_rra(ps);
-	op_rra(ps);
+	else if (stack->top->data == ps->sotr_arr[ps->count_arr - 2] && 
+			stack->top->next->data == ps->sotr_arr[ps->count_arr - 1])
+	{
+		ft_putendl("66666");
+		move_all_to_stack_a(ps);
+	}
 }
 
 void	final_sort(t_ps *ps)
 {
+	inser_ss_rr(ps);
 	print_node(&ps->stack_a, &ps->stack_b);
 	ft_printf("ps->only_bott = [%d] ps->only_top = [%d]\n",
 			ps->only_bott, ps->only_top);
-	if (ps->stack_b.top->data == ps->sotr_arr[ps->count_arr - 1])
+	if (ps->stack_a.count == 2)
+		sort_two_elemts(ps, &ps->stack_a);
+	else if (ps->stack_b.top->data == ps->sotr_arr[ps->count_arr - 1])
 	{
 		ft_putendl("@@@@");
 		sort_three_elemts_bott(ps, &ps->stack_a);
