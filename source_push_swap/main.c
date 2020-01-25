@@ -14,12 +14,24 @@ void	init(t_ps *ps)
 	ps->stack_b.bl_rr = 0;
 	ps->only_top = 0;
 	ps->only_top = 0;
-	ps->mid[0].item = 0;
-	ps->mid[1].item = 0;
-	ps->mid[2].item = 0;
-	ps->mid[0].num_item_sort = 0;
-	ps->mid[1].num_item_sort = 0;
-	ps->mid[2].num_item_sort = 0;
+}
+
+void	ft_swap(int a, int b)
+{
+	int tmp;
+	int X[10];
+	int Y[10];
+	int i;
+
+	if (X[i] < X[i + 1])
+	{
+		tmp = X[i];
+		X[i] = X[i + 1];
+		X[i + 1] = tmp;
+		tmp = Y[i];
+		Y[i] = Y[i + 1];
+		Y[i + 1] = tmp;
+	}
 }
 
 void		check_arg(char *arg)
@@ -319,69 +331,6 @@ void	operations(t_ps *ps)
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
-int		count_steps_to_top(t_ps *ps, int i)
-{
-	t_node *node;
-	int		res;
-
-	res = 0;
-	node = ps->stack_a.top;
-	while (node)
-	{
-		if (node->data == ps->mid[i].item)
-		{
-			if (node->number <= ps->stack_a.count / 2) 
-				res = node->number;
-			else
-				res = (ps->stack_a.count - node->number) * (-1);
-			return (res);
-		}
-		node = node->next;
-	}
-	return (-1);
-}
-
-int		count_steps(t_ps *ps, int i)
-{
-	int to_top;
-
-	to_top = count_steps_to_top(ps, i);
-	if (to_top < 0)
-		to_top = to_top * (-1);
-	if (i == 0 || ps->stack_b.count == 0)
-		return (to_top + 1);
-	return (to_top + 2);
-}
-
-int		item_to_move(t_ps *ps)
-{
-	int item;
-	int steps;
-	int	tmp;
-	int i;
-
-	i = 0;
-	if (ps->only_top == 1)
-		return (0);
-	else if (ps->only_bott == 1)
-		i++;
-	item = i;
-	steps = count_steps(ps, i);
-	ft_printf("steps mid[%d] [%d] = {%d}\n", i, ps->mid[i], steps);
-	while (++i < 3)
-	{
-		tmp = count_steps(ps, i);
-		ft_printf("steps mid[%d] [%d] = {%d}\n", i, ps->mid[i], tmp);
-		if (tmp < steps)
-		{
-			steps = tmp;
-			item = i;
-		}
-	}
-	ft_printf("min steps mid[%d] [%d] = {%d}\n", item, ps->mid[item], steps);
-	return (item);
-}
-
 void	to_top_with_rr(t_ps *ps)
 {
 	if (ps->stack_b.bl_rr == 1)
@@ -391,121 +340,6 @@ void	to_top_with_rr(t_ps *ps)
 	}
 	else
 		op_ra(ps);
-}
-
-void	to_top_with_ss(t_ps *ps, int item, int bl)
-{
-	if (ps->stack_a.top->next->data == ps->mid[item].item && bl)
-	{
-		if (ps->stack_b.bl_ss == 1)
-		{
-			op_ss(ps);
-			ps->stack_b.bl_ss = 0;
-		}
-		else
-		{
-			//ft_putendl("a111111111111111111111111111111111111a");
-			//kop_sb(ps);
-			to_top_with_rr(ps);
-		}
-	}
-	else
-		to_top_with_rr(ps);
-		//op_ra(ps);
-}
-
-void	inser_ss_rr(t_ps *ps)
-{
-	if (ps->stack_b.bl_ss == 1)
-	{
-		op_sb(ps);
-		ps->stack_b.bl_ss = 0;
-	}
-	if (ps->stack_b.bl_rr == 1)
-	{
-		op_rb(ps);
-		ps->stack_b.bl_rr = 0;
-	}
-}
-
-void	move_item_to_top(t_ps *ps, int item, int bl)
-{
-	int steps_to_top;
-
-	ft_printf("item {%d}\n", item);
-	steps_to_top = count_steps_to_top(ps, item);
-	ft_printf("steps_to_top {%d}\n", steps_to_top);
-	if (steps_to_top >= 0)
-		while (ps->stack_a.top->data != ps->mid[item].item)
-			to_top_with_ss(ps, item, bl);
-	else
-		while (ps->stack_a.top->data != ps->mid[item].item)
-			op_rra(ps);
-	inser_ss_rr(ps);
-//	print_node(&ps->stack_a, &ps->stack_b);
-}
-
-void	move_item(t_ps *ps, int num_item)
-{
-	move_item_to_top(ps, num_item, 1);
-	if (num_item == 0)
-	{
-		op_pb(ps);
-		ps->stack_b.bl_rr = 1;
-		//op_rb(ps);
-	}
-	else if (num_item == 1)
-		op_pb(ps);
-	else if (num_item == 2)
-	{
-		op_pb(ps);
-		move_item_to_top(ps, 1, 0);
-		op_pb(ps);
-		ps->stack_b.bl_ss = 1;
-		//op_sb(ps);
-	}
-	recount_number_stack(ps->stack_a.top);
-	recount_number_stack(ps->stack_b.top);
-	print_node(&ps->stack_a, &ps->stack_b);
-}
-
-void	recount_number_item(t_ps *ps, int num_item)
-{
-	if (num_item == 0)
-	{
-		ps->mid[0].num_item_sort--;
-		if (ps->mid[0].num_item_sort == -1)
-			ps->only_bott = 1;
-		else
-			ps->mid[0].item = ps->sotr_arr[ps->mid[0].num_item_sort];
-	}
-	else if (num_item == 1)
-	{
-		ps->mid[1].num_item_sort++;
-		ps->mid[2].num_item_sort++;
-		if (ps->mid[2].num_item_sort > ps->count_arr - 1)
-			ps->only_top = 1;
-		else
-		{
-			ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
-			ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
-		}
-	}
-	else if (num_item == 2)
-	{
-		ps->mid[1].num_item_sort += 2;
-		ps->mid[2].num_item_sort += 2;
-		if (ps->mid[2].num_item_sort > ps->count_arr - 1)
-			ps->only_top = 1;
-		else
-		{
-			ps->mid[1].item = ps->sotr_arr[ps->mid[1].num_item_sort];
-			ps->mid[2].item = ps->sotr_arr[ps->mid[2].num_item_sort];
-		}
-	}
-	ft_printf("num_item_sort {%d} = [%d]\n", 0, ps->mid[0].num_item_sort);
-	ft_printf("num_item_sort {%d} = [%d]\n", 1, ps->mid[1].num_item_sort);
-	ft_printf("num_item_sort {%d} = [%d]\n", 2, ps->mid[2].num_item_sort);
 }
 
 void	move_all_to_stack_a(t_ps *ps)
@@ -702,47 +536,10 @@ void	sort_two_elemts(t_ps *ps, t_stack *stack)
 	}
 }
 
-void	final_sort(t_ps *ps)
-{
-	inser_ss_rr(ps);
-	print_node(&ps->stack_a, &ps->stack_b);
-	ft_printf("ps->only_bott = [%d] ps->only_top = [%d]\n",
-			ps->only_bott, ps->only_top);
-	if (ps->stack_a.count == 2)
-		sort_two_elemts(ps, &ps->stack_a);
-	else if (ps->stack_b.top->data == ps->sotr_arr[ps->count_arr - 1])
-	{
-		ft_putendl("@@@@");
-		sort_three_elemts_bott(ps, &ps->stack_a);
-		op_rra(ps);
-		op_rra(ps);
-		op_rra(ps);
-	}
-	else if(ps->only_bott == 1)
-		sort_three_elemts_bott(ps, &ps->stack_a);
-	else if (ps->only_top == 1)
-		sort_three_elemts_top(ps, &ps->stack_a);
-	else
-		sort_three_elemts(ps, &ps->stack_a);
-
-	//print_node(&ps->stack_a, &ps->stack_b);
-	//move_all_to_stack_a(ps);
-	//op_rra(ps);
-	//op_rra(ps);
-}
-
 void	algoritm(t_ps *ps)
 {
 	int num_item;
 
-	while (ps->stack_a.count > 3)
-	{
-		ft_putendl("------------------------------------------------");
-		num_item = item_to_move(ps);
-		move_item(ps, num_item);
-		recount_number_item(ps, num_item);
-	}
-	final_sort(ps);
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 
@@ -769,23 +566,6 @@ void	bable_sort(t_ps *ps)
 	print_sort_arr(ps);
 }
 
-void	infill_mid_value(t_ps *ps)
-{
-	int ind;
-
-	ind = ps->stack_a.count / 2;
-	if (ps->stack_a.count < 3)
-		sys_err("Fooooo\n");
-	ps->mid[0].item = ps->sotr_arr[ind - 1];
-	ps->mid[0].num_item_sort = ind - 1;
-	ft_printf("mid[0] a = {%d}\n", ps->mid[0]);
-	ps->mid[1].item = ps->sotr_arr[ind];
-	ps->mid[1].num_item_sort = ind;
-	ft_printf("mid[1] b = {%d}\n", ps->mid[1]);
-	ps->mid[2].item = ps->sotr_arr[ind + 1];
-	ps->mid[2].num_item_sort = ind + 1;
-	ft_printf("mid[2] c = {%d}\n", ps->mid[2]);
-}
 
 void	dell_arr(char ***arr)
 {
@@ -828,7 +608,6 @@ int		main(int ac, char **av)
 	init(&ps);
 	processing_args(&ps, ac, av);
 	bable_sort(&ps);
-	infill_mid_value(&ps);
 	//operations(&ps);
 	algoritm(&ps);
 	return (0);
