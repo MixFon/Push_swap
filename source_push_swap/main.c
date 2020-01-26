@@ -12,26 +12,6 @@ void	init(t_ps *ps)
 	ps->stack_b.count = 0;
 	ps->stack_b.bl_ss = 0;
 	ps->stack_b.bl_rr = 0;
-	ps->only_top = 0;
-	ps->only_top = 0;
-}
-
-void	ft_swap(int a, int b)
-{
-	int tmp;
-	int X[10];
-	int Y[10];
-	int i;
-
-	if (X[i] < X[i + 1])
-	{
-		tmp = X[i];
-		X[i] = X[i + 1];
-		X[i + 1] = tmp;
-		tmp = Y[i];
-		Y[i] = Y[i + 1];
-		Y[i + 1] = tmp;
-	}
 }
 
 void		check_arg(char *arg)
@@ -317,7 +297,7 @@ void	op_ss(t_ps *ps)
 	op_swap(&ps->stack_b);
 	ft_putendl("ss");
 }
-;
+
 void	operations(t_ps *ps)
 {
 	print_node(&ps->stack_a, &ps->stack_b);
@@ -348,11 +328,52 @@ void	move_all_to_stack_a(t_ps *ps)
 		op_pa(ps);
 }
 
+void	determine_minimal_el(t_ps *ps)
+{
+	t_node *node;
+
+	node = ps->stack_a.top;
+	ps->stack_a.min = node;
+	while (node)
+	{
+		if (ps->stack_a.min->data > node->data)
+			ps->stack_a.min = node;
+		node = node->next;
+	}
+	ft_printf("min->data = [%d] min->number = [%d]\n", ps->stack_a.min->data,
+			ps->stack_a.min->number);
+}
+
+int		is_cycle_sort(t_ps *ps)
+{
+	t_node	*node;
+
+	determine_minimal_el(ps);
+	node = ps->stack_a.top;
+	while (node && node->next)
+	{
+		ft_printf("node->data = [%d]\n", node->data);
+		if (node->data > node->next->data && node->next != ps->stack_a.min)
+			return (0);
+		node = node->next;
+	}
+	if (ps->stack_a.top->data < ps->stack_a.bott->data)
+		return (0);
+	return (1);
+}
 
 void	algoritm(t_ps *ps)
 {
 	int num_item;
 
+	print_node(&ps->stack_a, &ps->stack_b);
+	ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
+	while (!is_cycle_sort(ps) && ps->stack_a.count > 3)
+	{
+		op_pb(ps);
+		recount_number_stack(ps->stack_a.top);
+		recount_number_stack(ps->stack_b.top);
+	}
 	print_node(&ps->stack_a, &ps->stack_b);
 }
 

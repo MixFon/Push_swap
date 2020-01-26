@@ -16,7 +16,8 @@ NAMECK = checker
 LIBDIR = ./libft
 
 
-FILE_C = main.c
+FILE_C = main.c\
+		 sort_three_element.c
 
 # -Wall -Wextra -Werror 
 FLAGS = -I libft -I include  

@@ -15,6 +15,7 @@ typedef struct		s_stack
 {
 	struct s_node	*top;
 	struct s_node	*bott;
+	struct s_node	*min;
 	size_t			count;
 	int				bl_ss;
 	int				bl_rr;
@@ -26,8 +27,6 @@ typedef struct		s_ps
 	t_stack			stack_b;
 	int				*sotr_arr;
 	int				count_arr;
-	int				only_bott;
-	int				only_top;
 }					t_ps;
 
 void	op_pa(t_ps *ps);
