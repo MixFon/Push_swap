@@ -30,4 +30,18 @@ typedef struct		s_ps
 	int				only_top;
 }					t_ps;
 
+void	op_pa(t_ps *ps);
+void	op_pb(t_ps *ps);
+void	op_ra(t_ps *ps);
+void	op_rb(t_ps *ps);
+void	op_rr(t_ps *ps);
+void	op_rra(t_ps *ps);
+void	op_rrb(t_ps *ps);
+void	op_rrr(t_ps *ps);
+void	op_sa(t_ps *ps);
+void	op_sb(t_ps *ps);
+void	op_ss(t_ps *ps);
+void	move_all_to_stack_a(t_ps *ps);
+void	to_top_with_rr(t_ps *ps);
+
 #endif
