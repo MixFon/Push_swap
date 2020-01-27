@@ -6,7 +6,7 @@ void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
 			stack->top->next->data < stack->bott->data)
 	{
 		ft_putendl("11");
-		move_all_to_stack_a(ps);
+		//move_all_to_stack_a(ps);
 		return ;
 	}
 	else if (stack->bott->data > stack->top->data &&
@@ -41,7 +41,7 @@ void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
 		op_sa(ps);
 		op_rra(ps);
 	}
-	move_all_to_stack_a(ps);
+	//move_all_to_stack_a(ps);
 }
 
 void	sort_three_elemts_top(t_ps *ps, t_stack *stack)
@@ -98,7 +98,7 @@ void	sort_three_elemts(t_ps *ps, t_stack *stack)
 			stack->top->data > stack->bott->data)
 	{
 		ft_putendl("1");
-		move_all_to_stack_a(ps);
+		//move_all_to_stack_a(ps);
 		op_rra(ps);
 		return ;
 	}
@@ -106,7 +106,7 @@ void	sort_three_elemts(t_ps *ps, t_stack *stack)
 			stack->top->data < stack->bott->data)
 	{
 		ft_putendl("2");
-		op_rra(ps);
+		//op_rra(ps);
 		op_sa(ps);
 	}
 	else if (stack->top->data > stack->top->next->data &&
@@ -134,8 +134,8 @@ void	sort_three_elemts(t_ps *ps, t_stack *stack)
 		ft_putendl("6");
 		to_top_with_rr(ps);
 	}
-	move_all_to_stack_a(ps);
-	op_rra(ps);
+	//move_all_to_stack_a(ps);
+	//op_rra(ps);
 }
 
 void	sort_two_elemts(t_ps *ps, t_stack *stack)

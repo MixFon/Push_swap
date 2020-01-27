@@ -4,13 +4,17 @@ void	init(t_ps *ps)
 {
 	ps->stack_a.top = NULL;
 	ps->stack_a.bott = NULL;
+	ps->stack_a.el_to_top = NULL;
+	ps->stack_a.min = NULL;
 	ps->stack_a.count = 0;
-	ps->stack_a.bl_ss = 0;
+	ps->stack_a.bl_r = 0;
 	ps->stack_a.bl_rr = 0;
 	ps->stack_b.top = NULL;
 	ps->stack_b.bott = NULL;
+	ps->stack_b.el_to_top = NULL;
+	ps->stack_b.min = NULL;
 	ps->stack_b.count = 0;
-	ps->stack_b.bl_ss = 0;
+	ps->stack_b.bl_r = 0;
 	ps->stack_b.bl_rr = 0;
 }
 
@@ -357,9 +361,158 @@ int		is_cycle_sort(t_ps *ps)
 			return (0);
 		node = node->next;
 	}
+	if (ps->stack_a.top == ps->stack_a.min)
+		return (1);
 	if (ps->stack_a.top->data < ps->stack_a.bott->data)
 		return (0);
 	return (1);
+}
+
+int		count_steps_to_top(t_stack *stack, int data)
+{
+	t_node *node;
+	int		res;
+
+	res = 0;
+	node = stack->top;
+	while (node)
+	{
+		if (node->data == data)
+		{
+			if (node->number <= stack->count / 2) 
+			{
+				res = node->number;
+				stack->bl_r = 1;
+				stack->bl_rr = 0;
+			}
+			else
+			{
+				res = (stack->count - node->number);
+				stack->bl_r = 0;
+				stack->bl_rr = 1;
+			}
+			stack->el_to_top = node;
+			return (res);
+		}
+		node = node->next;
+	}
+	return (0);
+}
+
+int		count_steps(t_ps *ps, int data)
+{
+	int		steps;
+	t_node	*node;
+
+	node = ps->stack_a.top;
+	steps = count_steps_to_top(&ps->stack_b, data);
+	if (data < ps->stack_a.top->data && data > ps->stack_a.bott->data)
+	{
+		ft_putendl("aa");
+		steps += count_steps_to_top(&ps->stack_a, node->data);
+		return (steps + 1);
+	}
+	while (node->next)
+	{
+		if (node->data < data &&
+				(node->next->data > data || node->next == ps->stack_a.min))
+		{
+			ft_putendl("dd");
+			steps += count_steps_to_top(&ps->stack_a, node->next->data);
+			break;
+		}
+		node = node->next;
+	}
+	if (node->next == NULL)
+		count_steps_to_top(&ps->stack_a, ps->stack_a.min->data);
+	ft_putendl("cc");
+	//count_steps_to_top(&ps->stack_a, ps->stack_a.top->data);
+	return (steps + 1);
+}
+
+t_node	*search_min_el(t_ps *ps)
+{
+	t_node	*node;
+	t_node	*min_el;
+	int		steps;
+	int		tmp;
+
+	node = ps->stack_b.top;
+	min_el = node;
+	steps = ps->stack_b.count;
+	while (node)
+	{
+		tmp = count_steps(ps, node->data);
+		if (steps > tmp)
+		{
+			steps = tmp;
+			min_el = node;
+		}
+		ft_printf("data = [%d] steps = [%d]\n", node->data,
+				tmp);
+		node = node->next;
+	}
+	ft_printf("min data = [%d] steps = [%d]\n", min_el->data,
+			count_steps(ps, min_el->data));
+	ft_printf("stack_a.min = [%d]\n", ps->stack_a.min->data);
+	ft_printf("el_to_top A  = [%d]\n", ps->stack_a.el_to_top->data);
+	ft_printf("el_to_top B  = [%d]\n", ps->stack_b.el_to_top->data);
+	return (min_el);
+}
+
+void	move_min_el(t_ps *ps, t_node *node)
+{
+	while (ps->stack_a.bl_r || ps->stack_a.bl_rr ||
+			ps->stack_b.bl_r || ps->stack_b.bl_rr)
+	{
+		if (ps->stack_a.top == ps->stack_a.el_to_top)
+		{
+			ps->stack_a.bl_r = 0;
+			ps->stack_a.bl_rr = 0;
+		}
+		if (ps->stack_b.top == ps->stack_b.el_to_top)
+		{
+			ps->stack_b.bl_r = 0;
+			ps->stack_b.bl_rr = 0;
+		}
+		if (ps->stack_a.bl_r && ps->stack_b.bl_r)
+			op_rr(ps);
+		else if (ps->stack_a.bl_rr && ps->stack_b.bl_rr)
+			op_rrr(ps);
+		else if (ps->stack_a.bl_rr)
+			op_rra(ps);
+		else if (ps->stack_a.bl_r)
+			op_ra(ps);
+		else if (ps->stack_b.bl_r)
+			op_rb(ps);
+		else if (ps->stack_b.bl_rr)
+			op_rrb(ps);
+	}
+}
+
+void	empty_stack_b(t_ps *ps)
+{
+	t_node *min_el;
+
+	while (ps->stack_b.count > 0)
+	{
+		determine_minimal_el(ps);
+		min_el = search_min_el(ps);
+		move_min_el(ps, min_el);
+		op_pa(ps);
+		recount_number_stack(ps->stack_a.top);
+		recount_number_stack(ps->stack_b.top);
+		print_node(&ps->stack_a, &ps->stack_b);
+	}
+}
+void	final_sort(t_ps *ps)
+{
+	if (ps->stack_a.min->data <= ps->stack_a.count / 2)
+		while (ps->stack_a.top != ps->stack_a.min)
+			op_ra(ps);
+	else 
+		while (ps->stack_a.top != ps->stack_a.min)
+			op_rra(ps);
 }
 
 void	algoritm(t_ps *ps)
@@ -375,6 +528,13 @@ void	algoritm(t_ps *ps)
 		recount_number_stack(ps->stack_b.top);
 	}
 	print_node(&ps->stack_a, &ps->stack_b);
+	if (!is_cycle_sort(ps) && ps->stack_b.count == 0)
+		sort_three_elemts_bott(ps, &ps->stack_a);
+	print_node(&ps->stack_a, &ps->stack_b);
+	empty_stack_b(ps);
+	final_sort(ps);
+	print_node(&ps->stack_a, &ps->stack_b);
+	//ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
 }
 
 void	bable_sort(t_ps *ps)

@@ -16,8 +16,9 @@ typedef struct		s_stack
 	struct s_node	*top;
 	struct s_node	*bott;
 	struct s_node	*min;
+	struct s_node	*el_to_top;
 	size_t			count;
-	int				bl_ss;
+	int				bl_r;
 	int				bl_rr;
 }					t_stack;
 
@@ -42,5 +43,7 @@ void	op_sb(t_ps *ps);
 void	op_ss(t_ps *ps);
 void	move_all_to_stack_a(t_ps *ps);
 void	to_top_with_rr(t_ps *ps);
+void	sort_three_elemts(t_ps *ps, t_stack *stack);
+void	sort_three_elemts_bott(t_ps *ps, t_stack *stack);
 
 #endif
