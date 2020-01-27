@@ -11,13 +11,20 @@
 # **************************************************************************** #
 
 NAMEPS = push_swap
+
 NAMECK = checker
 
 LIBDIR = ./libft
 
-
-FILE_C = main.c\
+PS_C = main.c\
 		 sort_three_element.c
+
+CH_C = checker.c
+
+SH_C = add_node.c\
+	   processing_arg.c\
+	   operations.c
+
 
 # -Wall -Wextra -Werror 
 FLAGS = -I libft -I include  
@@ -26,20 +33,36 @@ FLIB = -L ./libft -lftprintf
 
 DIRPS = ./source_push_swap/
 
+DIRCH = ./source_checker/
+
+DIRSH = ./shared_files/
+
 VPATH = $(DIROBJ)
 
 DIROBJ = ./obj/
 
-OBJ = $(addprefix $(DIROBJ), $(FILE_C:.c=.o))
+OBJ = $(addprefix $(DIROBJ), $(PS_C:.c=.o))
 
-all : $(NAMEPS)
+OBJCH = $(addprefix $(DIROBJ), $(CH_C:.c=.o))
 
-$(NAMEPS): $(DIROBJ) $(OBJ) 
+OBJSH = $(addprefix $(DIROBJ), $(SH_C:.c=.o))
+
+
+all : $(NAMEPS) $(NAMECH)
+
+$(NAMEPS): $(DIROBJ) $(OBJSH) $(OBJCH) $(OBJ) 
 #	make -C $(LIBDIR)
-	gcc $(FLAGS) $(OBJ) $(FLIB) -o $(NAMEPS)
+	gcc $(FLAGS) $(OBJ) $(OBJSH) $(FLIB) -o $(NAMEPS)
+	gcc $(FLAGS) $(OBJCH) $(OBJSH) $(FLIB) -o $(NAMECK)
 	make clean -C $(LIBDIR)
 
 $(DIROBJ)%.o : $(DIRPS)%.c
+	gcc -g $(FLAGS) -c $< -o $@
+
+$(DIROBJ)%.o : $(DIRCH)%.c
+	gcc -g $(FLAGS) -c $< -o $@
+
+$(DIROBJ)%.o : $(DIRSH)%.c
 	gcc -g $(FLAGS) -c $< -o $@
 
 $(DIROBJ):
