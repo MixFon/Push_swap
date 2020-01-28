@@ -3,8 +3,17 @@
 
 #include "../libft/libft.h"
 #include "limits.h"
+#include "../minilibx_macos/mlx.h"
 
-#define	STROP "rararbrrpbrraparrbrrrsasbss"
+
+# define STROP		"rararbrrpbrraparrbrrrsasbss"
+# define WIDTH		1024
+# define HEIGHT		720
+
+# define HALFWID	512
+# define HALFHEI	360
+
+# define ABS(N) ((N<0)?(-N):(N))
 
 typedef struct		s_node
 {
@@ -28,9 +37,31 @@ typedef struct		s_ps
 {
 	t_stack			stack_a;
 	t_stack			stack_b;
-	int				*sotr_arr;
-	int				count_arr;
 }					t_ps;
+
+typedef struct		s_op
+{
+	char			op[10];
+	size_t			number;
+	struct s_op		*next;
+}					t_op;
+
+typedef struct		s_ch
+{
+	struct s_ps		ps;
+	struct s_op		*op;
+	struct s_op		*iter;
+	void			*mlx;
+	void			*window;
+}					t_ch;
+
+typedef struct	s_coor
+{
+	int			x;
+	int			y;
+	int			z;
+	int			color;
+}				t_coor;
 
 void	op_pa(t_ps *ps);
 void	op_pb(t_ps *ps);
@@ -63,7 +94,6 @@ void	add_node(t_ps *ps, int data);
 int		check_number(char *arg);
 void	infill_stack(t_ps *ps, int ac, char **av);
 void	dell_arr(char ***arr);
-void	bable_sort(t_ps *ps);
 void	processing_args(t_ps *ps, int ac, char **av);
 /*
 ** File shared_files/operations.c

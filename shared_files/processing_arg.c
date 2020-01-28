@@ -29,22 +29,16 @@ int		check_number(char *arg)
 void	infill_stack(t_ps *ps, int ac, char **av)
 {
 	int num;
-	int i;
 
-	i = -1;
-	ps->count_arr = ac - 1;
-	if (!(ps->sotr_arr = (int*)malloc(sizeof(int) * (ac - 1))))
-		sys_err("Error malloc.\n");
 	while (*av != '\0')
 	{
 		check_arg(*av);
 		num = check_number(*av);
 		add_node(ps, num);
-		ps->sotr_arr[++i] = num;
 		av++;
 	}
 	//print_sort_arr(ps);
-	print_node(&ps->stack_a, &ps->stack_b);
+	//print_node(&ps->stack_a, &ps->stack_b);
 }
 
 void	dell_arr(char ***arr)
@@ -63,6 +57,7 @@ void	dell_arr(char ***arr)
 	free(*arr);
 }
 
+/*
 void	bable_sort(t_ps *ps)
 {
 	int i;
@@ -85,7 +80,7 @@ void	bable_sort(t_ps *ps)
 	}
 	print_sort_arr(ps);
 }
-
+*/
 void	processing_args(t_ps *ps, int ac, char **av)
 {
 	char	**args;

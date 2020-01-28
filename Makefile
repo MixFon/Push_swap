@@ -28,6 +28,8 @@ SH_C = add_node.c\
 
 # -Wall -Wextra -Werror 
 FLAGS = -I libft -I include  
+#-Wall -Wextra -Werror 
+FLAGSMLX = -I minilibx_macos -L minilibx_macos -lmlx -framework OpenGL -framework AppKit
 
 FLIB = -L ./libft -lftprintf 
 
@@ -53,14 +55,14 @@ all : $(NAMEPS) $(NAMECH)
 $(NAMEPS): $(DIROBJ) $(OBJSH) $(OBJCH) $(OBJ) 
 #	make -C $(LIBDIR)
 	gcc $(FLAGS) $(OBJ) $(OBJSH) $(FLIB) -o $(NAMEPS)
-	gcc $(FLAGS) $(OBJCH) $(OBJSH) $(FLIB) -o $(NAMECK)
+	gcc $(FLAGS) $(FLAGSMLX) $(OBJCH) $(OBJSH) $(FLIB) -o $(NAMECK)
 	make clean -C $(LIBDIR)
 
 $(DIROBJ)%.o : $(DIRPS)%.c
 	gcc -g $(FLAGS) -c $< -o $@
 
 $(DIROBJ)%.o : $(DIRCH)%.c
-	gcc -g $(FLAGS) -c $< -o $@
+	gcc -g $(FLAGS) $(FLAGSMLX) -c $< -o $@
 
 $(DIROBJ)%.o : $(DIRSH)%.c
 	gcc -g $(FLAGS) -c $< -o $@

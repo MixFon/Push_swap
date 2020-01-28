@@ -1,5 +1,6 @@
 #include "../include/push_swap.h"
 
+/*
 void	print_sort_arr(t_ps *ps)
 {
 	int *arr;
@@ -11,7 +12,7 @@ void	print_sort_arr(t_ps *ps)
 	while (++i < ps->count_arr)
 		ft_printf("%d\n", arr[i]);
 }
-
+*/
 
 void	recount_number_stack(t_node *node)
 {
@@ -24,7 +25,6 @@ void	recount_number_stack(t_node *node)
 		node = node->next;
 	}
 }
-
 
 void	op_pa(t_ps *ps)
 {
@@ -95,19 +95,6 @@ void	op_ss(t_ps *ps)
 	ft_putendl("ss");
 }
 
-void	operations(t_ps *ps)
-{
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_reverse_rotate(&ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_reverse_rotate(&ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_reverse_rotate(&ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-	op_reverse_rotate(&ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
-}
-
 void	to_top_with_rr(t_ps *ps)
 {
 	if (ps->stack_b.bl_rr == 1)
@@ -137,8 +124,10 @@ void	determine_minimal_el(t_ps *ps)
 			ps->stack_a.min = node;
 		node = node->next;
 	}
+	/*
 	ft_printf("min->data = [%d] min->number = [%d]\n", ps->stack_a.min->data,
 			ps->stack_a.min->number);
+	*/
 }
 
 int		is_cycle_sort(t_ps *ps)
@@ -149,7 +138,7 @@ int		is_cycle_sort(t_ps *ps)
 	node = ps->stack_a.top;
 	while (node && node->next)
 	{
-		ft_printf("node->data = [%d]\n", node->data);
+	//	ft_printf("node->data = [%d]\n", node->data);
 		if (node->data > node->next->data && node->next != ps->stack_a.min)
 			return (0);
 		node = node->next;
@@ -201,7 +190,7 @@ int		count_steps(t_ps *ps, int data)
 	steps = count_steps_to_top(&ps->stack_b, data);
 	if (data < ps->stack_a.top->data && data > ps->stack_a.bott->data)
 	{
-		ft_putendl("aa");
+	//	ft_putendl("aa");
 		steps += count_steps_to_top(&ps->stack_a, node->data);
 		return (steps + 1);
 	}
@@ -210,7 +199,7 @@ int		count_steps(t_ps *ps, int data)
 		if (node->data < data &&
 				(node->next->data > data || node->next == ps->stack_a.min))
 		{
-			ft_putendl("dd");
+	//		ft_putendl("dd");
 			steps += count_steps_to_top(&ps->stack_a, node->next->data);
 			break;
 		}
@@ -218,7 +207,7 @@ int		count_steps(t_ps *ps, int data)
 	}
 	if (node->next == NULL)
 		count_steps_to_top(&ps->stack_a, ps->stack_a.min->data);
-	ft_putendl("cc");
+	//ft_putendl("cc");
 	//count_steps_to_top(&ps->stack_a, ps->stack_a.top->data);
 	return (steps + 1);
 }
@@ -241,15 +230,20 @@ t_node	*search_min_el(t_ps *ps)
 			steps = tmp;
 			min_el = node;
 		}
+		/*
 		ft_printf("data = [%d] steps = [%d]\n", node->data,
 				tmp);
+				*/
 		node = node->next;
 	}
+	count_steps(ps, min_el->data);
+	/*
 	ft_printf("min data = [%d] steps = [%d]\n", min_el->data,
 			count_steps(ps, min_el->data));
 	ft_printf("stack_a.min = [%d]\n", ps->stack_a.min->data);
 	ft_printf("el_to_top A  = [%d]\n", ps->stack_a.el_to_top->data);
 	ft_printf("el_to_top B  = [%d]\n", ps->stack_b.el_to_top->data);
+	*/
 	return (min_el);
 }
 
@@ -295,7 +289,7 @@ void	empty_stack_b(t_ps *ps)
 		op_pa(ps);
 		recount_number_stack(ps->stack_a.top);
 		recount_number_stack(ps->stack_b.top);
-		print_node(&ps->stack_a, &ps->stack_b);
+		//print_node(&ps->stack_a, &ps->stack_b);
 	}
 }
 void	final_sort(t_ps *ps)
@@ -312,21 +306,21 @@ void	algoritm(t_ps *ps)
 {
 	int num_item;
 
-	print_node(&ps->stack_a, &ps->stack_b);
-	ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
+	//print_node(&ps->stack_a, &ps->stack_b);
+	//ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
 	while (!is_cycle_sort(ps) && ps->stack_a.count > 3)
 	{
 		op_pb(ps);
 		recount_number_stack(ps->stack_a.top);
 		recount_number_stack(ps->stack_b.top);
 	}
-	print_node(&ps->stack_a, &ps->stack_b);
+	//print_node(&ps->stack_a, &ps->stack_b);
 	if (!is_cycle_sort(ps) && ps->stack_b.count != 0)
 		sort_three_elemts_bott(ps, &ps->stack_a);
-	print_node(&ps->stack_a, &ps->stack_b);
+	//print_node(&ps->stack_a, &ps->stack_b);
 	empty_stack_b(ps);
 	final_sort(ps);
-	print_node(&ps->stack_a, &ps->stack_b);
+	//print_node(&ps->stack_a, &ps->stack_b);
 	//ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
 }
 
@@ -339,7 +333,7 @@ int		main(int ac, char **av)
 		sys_err("To few arguments.\n");
 	init(&ps);
 	processing_args(&ps, ac, av);
-	bable_sort(&ps);
+	//bable_sort(&ps);
 	//operations(&ps);
 	algoritm(&ps);
 	return (0);
