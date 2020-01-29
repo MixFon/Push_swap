@@ -7,11 +7,13 @@
 
 
 # define STROP		"rararbrrpbrraparrbrrrsasbss"
-# define WIDTH		1024
-# define HEIGHT		720
+# define WIDTH		1500
+# define HEIGHT		1200
 
-# define HALFWID	512
-# define HALFHEI	360
+# define HALFWID	750
+# define HALFHEI	500
+
+# define STARTY		100
 
 # define ABS(N) ((N<0)?(-N):(N))
 
@@ -64,7 +66,6 @@ typedef struct	s_coor
 {
 	int			x;
 	int			y;
-	int			z;
 	int			color;
 }				t_coor;
 

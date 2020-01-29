@@ -50,7 +50,7 @@ void	put_pixel_adr(t_ch *ch, t_coor point)
 	ch->data_adr[++i] = 0;
 }
 
-void	ft_draw_line(t_ch *ch, t_coor point1, t_coor point2)
+void	ft_draw_line(t_ch *ch, t_coor point1, t_coor point2, int color)
 {
 	t_coor	delta;
 	t_coor	sign;
@@ -77,7 +77,7 @@ void	ft_draw_line(t_ch *ch, t_coor point1, t_coor point2)
 			error += delta.x;
 			point.y += sign.y;
 		}
-		point.color = 0xff00;//get_color(point, point1, point2, delta);
+		point.color = color;//get_color(point, point1, point2, delta);
 	}
 }
 
@@ -92,38 +92,41 @@ void	clear_image(t_ch *fdf)
 		temp[i] = 0;
 }
 
-void	mlx_put_stacks(t_ch *ch)
+void	put_stack(t_ch *ch, t_stack *stack, int start_x)
 {
 	t_coor point1;
 	t_coor point2;
 	t_node *node;
 
-	node = ch->ps.stack_a.top;
-	point1.x = 50;
-	point1.y = 100;
-	point2.y = 100;
+	node = stack->top;
+	point1.x = start_x;
+	point1.y = STARTY;
+	point2.y = STARTY;
 	while (node)
 	{
-		point2.x = node->data + 50;
-		ft_draw_line(ch, point1, point2);
+		point2.x = node->data + start_x;
+		ft_draw_line(ch, point1, point2, 0xff00);
 		node = node->next;
-		point1.y += 3;
-		point2.y += 3;
+		point1.y += 2;
+		point2.y += 2;
 	}
-	node = ch->ps.stack_b.top;
-	point2.x = HALFWID;
-	point1.y = 100;
-	point2.y = 100;
-	while (node)
-	{
-		point1.x = node->data + HALFWID;
-		ft_draw_line(ch, point2, point1);
-		node = node->next;
-		point1.y += 3;
-		point2.y += 3;
-	}
-	ft_bzero(ch->data_adr, ft_strlen(ch->data_adr));
+}
+
+void	mlx_put_stacks(t_ch *ch)
+{
+	t_coor point1;
+	t_coor point2;
+
+	point1.x = 0;
+	point1.y = STARTY;
+	point2.x = WIDTH;
+	point2.y = STARTY;
+	put_stack(ch, &ch->ps.stack_a, 100);
+	put_stack(ch, &ch->ps.stack_b, HALFWID);
+	ft_draw_line(ch, point1, point2, 0xffff);
 	mlx_put_image_to_window(ch->mlx, ch->window, ch->img_ptr, 0, 0);
+	mlx_string_put(ch->mlx, ch->window, 130, STARTY - 30, 0xffff, "Stack A");
+	mlx_string_put(ch->mlx, ch->window, HALFWID + 30, STARTY - 30, 0xffff, "Stack B");
 }
 
 void	work_perations(t_ps *ps, char *line)
@@ -159,6 +162,11 @@ void	work_perations(t_ps *ps, char *line)
 		op_swap(&ps->stack_a);
 		op_swap(&ps->stack_b);
 	}
+	else if (line != NULL)
+	{
+		ft_printf("Operation \"%s\" is not valid.\n", line);
+		exit(0);
+	}
 }
 
 void	stack_is_sort(t_ps *ps)
@@ -166,13 +174,12 @@ void	stack_is_sort(t_ps *ps)
 	t_node *node;
 
 	node = ps->stack_a.top;
-	while (node && node->next != ps->stack_a.bott)
+	while (node && node->next != NULL)
 	{
 		if (node->data > node->next->data)
 		{
 			print_node(&ps->stack_a, &ps->stack_b);
-			ft_putendl("KO!");
-			return ;
+			sys_err("KO!\n");
 		}
 		node = node->next;
 	}
@@ -183,17 +190,19 @@ void	stack_is_sort(t_ps *ps)
 int		work_operators(t_ch *ch)
 {
 	//mlx_clear_window(ch->mlx, ch->window);
-	//usleep(200000);
+	//usleep(10000);
 	clear_image(ch);
+	if (ch->iter == NULL)
+		return (0);
 	work_perations(&ch->ps, ch->iter->op);
 	mlx_put_stacks(ch);
 	ch->iter = ch->iter->next;
 	if (ch->iter == NULL)
 	{
 		stack_is_sort(&ch->ps);
-		sleep(3);
 		delete_stack(&ch->ps.stack_a);
 		delete_stack(&ch->ps.stack_b);
+		return (0);
 		sys_err("Done!\n");
 	}
 	return (0);
@@ -233,7 +242,8 @@ void	read_input(t_ch *ch)
 {
 	char *line;
 
-	while (get_next_line(0, &line))
+	line = NULL;
+	while (get_next_line(0, &line) != 0)
 	{
 		check(line);
 		add_node_op(ch, line);
@@ -241,6 +251,11 @@ void	read_input(t_ch *ch)
 		//ft_printf("<%s\n", line);
 		//mlx_string_put(ch->mlx, ch->window, i, i, 0xff00, line);
 		ft_strdel(&line);
+	}
+	if (ch->op == NULL)
+	{
+		stack_is_sort(&ch->ps);
+		exit(0);
 	}
 	ft_strdel(&line);
 	//stack_is_sort(&ch->ps);
@@ -271,6 +286,7 @@ int		main(int ac, char **av)
 
 	if (ac < 2)
 		sys_err("To few arguments.\n");
+	//sleep(10);
 	init(&ch.ps);
 	init_ch(&ch);
 	processing_args(&ch.ps, ac, av);
