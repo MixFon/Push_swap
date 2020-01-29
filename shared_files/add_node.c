@@ -49,7 +49,7 @@ void	search_dublicate(t_node *node, int data)
 	}
 }
 
-t_node	*create_node(int data, size_t *count)
+t_node	*create_node(int data, int *count)
 {
 	t_node *node;
 

@@ -26,7 +26,7 @@ int		check_number(char *arg)
 	return ((int)data);
 }
 
-void	infill_stack(t_ps *ps, int ac, char **av)
+void	infill_stack(t_ps *ps, char **av)
 {
 	int num;
 
@@ -57,42 +57,30 @@ void	dell_arr(char ***arr)
 	free(*arr);
 }
 
-/*
-void	bable_sort(t_ps *ps)
+void	delete_stack(t_stack *stack)
 {
-	int i;
-	int j;
-	int tmp;
+	t_node *node;
 
-	i = -1;
-	while (++i < ps->count_arr)
+	while (stack->top)
 	{
-		j = -1;
-		while (++j < ps->count_arr - 1)
-		{
-			if (ps->sotr_arr[i] < ps->sotr_arr[j])
-			{
-				tmp = ps->sotr_arr[i];
-				ps->sotr_arr[i] = ps->sotr_arr[j];
-				ps->sotr_arr[j] = tmp;
-			}
-		}
+		node = stack->top;
+		stack->top = stack->top->next;
+		free(node);
 	}
-	print_sort_arr(ps);
 }
-*/
+
 void	processing_args(t_ps *ps, int ac, char **av)
 {
 	char	**args;
 	int		count_args;
 
 	if (ac > 2)
-		infill_stack(ps, ac, av + 1);
+		infill_stack(ps, av + 1);
 	else
 	{
 		args = ft_strsplit(av[1], ' ');
 		count_args = ft_numwr(av[1], ' ');
-		infill_stack(ps, count_args + 1, args);
+		infill_stack(ps, args);
 		dell_arr(&args);
 	}
 }

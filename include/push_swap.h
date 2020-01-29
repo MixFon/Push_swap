@@ -18,7 +18,7 @@
 typedef struct		s_node
 {
 	int				data;
-	size_t			number;
+	int				number;
 	struct s_node	*next;
 }					t_node;
 
@@ -28,7 +28,7 @@ typedef struct		s_stack
 	struct s_node	*bott;
 	struct s_node	*min;
 	struct s_node	*el_to_top;
-	size_t			count;
+	int				count;
 	int				bl_r;
 	int				bl_rr;
 }					t_stack;
@@ -53,6 +53,11 @@ typedef struct		s_ch
 	struct s_op		*iter;
 	void			*mlx;
 	void			*window;
+	void			*img_ptr;
+	int				bits_adr;
+	int				size_adr;
+	int				endian;
+	char			*data_adr;
 }					t_ch;
 
 typedef struct	s_coor
@@ -86,14 +91,15 @@ void	print_sort_arr(t_ps *ps);
 void	init(t_ps *ps);
 void	check_arg(char *arg);
 void	search_dublicate(t_node *node, int data);
-t_node	*create_node(int data, size_t *count);
+t_node	*create_node(int data, int *count);
 void	add_node(t_ps *ps, int data);
 /*
 ** File shared_files/processing_args.c
 */
 int		check_number(char *arg);
-void	infill_stack(t_ps *ps, int ac, char **av);
+void	infill_stack(t_ps *ps, char **av);
 void	dell_arr(char ***arr);
+void	delete_stack(t_stack *stack);
 void	processing_args(t_ps *ps, int ac, char **av);
 /*
 ** File shared_files/operations.c

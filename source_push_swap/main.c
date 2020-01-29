@@ -1,19 +1,5 @@
 #include "../include/push_swap.h"
 
-/*
-void	print_sort_arr(t_ps *ps)
-{
-	int *arr;
-	int i;
-
-	i = -1;
-	arr = ps->sotr_arr;
-	ft_printf("Sort arr [%d]\n", ps->count_arr);
-	while (++i < ps->count_arr)
-		ft_printf("%d\n", arr[i]);
-}
-*/
-
 void	recount_number_stack(t_node *node)
 {
 	size_t	number;
@@ -247,7 +233,7 @@ t_node	*search_min_el(t_ps *ps)
 	return (min_el);
 }
 
-void	move_min_el(t_ps *ps, t_node *node)
+void	move_min_el(t_ps *ps)
 {
 	while (ps->stack_a.bl_r || ps->stack_a.bl_rr ||
 			ps->stack_b.bl_r || ps->stack_b.bl_rr)
@@ -285,7 +271,7 @@ void	empty_stack_b(t_ps *ps)
 	{
 		determine_minimal_el(ps);
 		min_el = search_min_el(ps);
-		move_min_el(ps, min_el);
+		move_min_el(ps);
 		op_pa(ps);
 		recount_number_stack(ps->stack_a.top);
 		recount_number_stack(ps->stack_b.top);
@@ -304,8 +290,6 @@ void	final_sort(t_ps *ps)
 
 void	algoritm(t_ps *ps)
 {
-	int num_item;
-
 	//print_node(&ps->stack_a, &ps->stack_b);
 	//ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
 	while (!is_cycle_sort(ps) && ps->stack_a.count > 3)
@@ -320,10 +304,11 @@ void	algoritm(t_ps *ps)
 	//print_node(&ps->stack_a, &ps->stack_b);
 	empty_stack_b(ps);
 	final_sort(ps);
+	delete_stack(&ps->stack_a);
+	delete_stack(&ps->stack_b);
 	//print_node(&ps->stack_a, &ps->stack_b);
 	//ft_printf("is cycle = [%d]\n", is_cycle_sort(ps));
 }
-
 
 int		main(int ac, char **av)
 {
@@ -333,8 +318,6 @@ int		main(int ac, char **av)
 		sys_err("To few arguments.\n");
 	init(&ps);
 	processing_args(&ps, ac, av);
-	//bable_sort(&ps);
-	//operations(&ps);
 	algoritm(&ps);
 	return (0);
 }

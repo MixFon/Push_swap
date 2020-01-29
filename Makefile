@@ -25,11 +25,11 @@ SH_C = add_node.c\
 	   processing_arg.c\
 	   operations.c
 
+FLAGS = -Wall -Wextra -Werror -I libft -I include -I ./minilibx_macos
 
-# -Wall -Wextra -Werror 
-FLAGS = -I libft -I include  
-#-Wall -Wextra -Werror 
-FLAGSMLX = -I minilibx_macos -L minilibx_macos -lmlx -framework OpenGL -framework AppKit
+HFILE = -I libft -I ./include -I ./minilibx_macos 
+ 
+FLAGSMLX = -L ./minilibx_macos -lmlx -framework OpenGL -framework AppKit
 
 FLIB = -L ./libft -lftprintf 
 
@@ -55,14 +55,14 @@ all : $(NAMEPS) $(NAMECH)
 $(NAMEPS): $(DIROBJ) $(OBJSH) $(OBJCH) $(OBJ) 
 #	make -C $(LIBDIR)
 	gcc $(FLAGS) $(OBJ) $(OBJSH) $(FLIB) -o $(NAMEPS)
-	gcc $(FLAGS) $(FLAGSMLX) $(OBJCH) $(OBJSH) $(FLIB) -o $(NAMECK)
+	gcc $(FLAGS) $(OBJCH) $(OBJSH) $(FLAGSMLX) $(FLIB) -o $(NAMECK)
 	make clean -C $(LIBDIR)
 
 $(DIROBJ)%.o : $(DIRPS)%.c
 	gcc -g $(FLAGS) -c $< -o $@
 
 $(DIROBJ)%.o : $(DIRCH)%.c
-	gcc -g $(FLAGS) $(FLAGSMLX) -c $< -o $@
+	gcc -g $(FLAGS) -c $< -o $@
 
 $(DIROBJ)%.o : $(DIRSH)%.c
 	gcc -g $(FLAGS) -c $< -o $@
