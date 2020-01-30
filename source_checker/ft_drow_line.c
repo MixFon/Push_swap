@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 11:27:07 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 11:41:46 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/01/30 13:12:34 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	check(char *line)
 t_coor	ft_draw_line_source(t_coor *delta,
 		t_coor *sign, t_coor point1, t_coor point2)
 {
-	(*delta).x = ABS((point2.x - point1.x));
-	(*delta).y = ABS((point2.y - point1.y));
+	(*delta).x = abs((point2.x - point1.x));
+	(*delta).y = abs((point2.y - point1.y));
 	(*sign).x = (point1.x < point2.x) ? 1 : -1;
 	(*sign).y = (point1.y < point2.y) ? 1 : -1;
 	return (point1);
