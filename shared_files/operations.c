@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   operations.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/30 11:49:32 by widraugr          #+#    #+#             */
+/*   Updated: 2020/01/30 11:50:11 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/push_swap.h"
 
@@ -17,7 +28,7 @@ void	print_node(t_stack *stack_a, t_stack *stack_b)
 		else
 			ft_printf("{%c}\t", ' ');
 		if (node_b)
-			ft_printf("{%d}\n",node_b->data);
+			ft_printf("{%d}\n", node_b->data);
 		else
 			ft_printf("{%c}\n", ' ');
 		if (node_a)
@@ -34,7 +45,7 @@ void	op_swap(t_stack *stack)
 	if (stack->count < 2)
 		return ;
 	node = stack->top->next;
-	stack->top->next = node->next; 
+	stack->top->next = node->next;
 	node->next = stack->top;
 	stack->top = node;
 	if (stack->top == stack->bott)

@@ -1,228 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   checker.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/30 11:25:50 by widraugr          #+#    #+#             */
+/*   Updated: 2020/01/30 11:44:20 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/push_swap.h"
-
-void	init_ch(t_ch *ch)
-{
-	ch->bits_adr = 4;
-	ch->size_adr = WIDTH;
-	ch->endian = 0;
-	ch->op = NULL;
-	ch->mlx = mlx_init();
-	ch->window = mlx_new_window(ch->mlx, WIDTH, HEIGHT, "Push swap");	
-	ch->img_ptr = mlx_new_image(ch->mlx, WIDTH, HEIGHT);
-	ch->data_adr = mlx_get_data_addr(ch->img_ptr,
-			&ch->bits_adr, &ch->size_adr, &ch->endian);
-}
-
-void	check(char *line)
-{
-	if (ft_strlen(line) > 4 || ft_strlen(line) < 2)
-	{
-		ft_printf("Operation \"%s\" is not valid.\n", line);
-		exit(0);
-	}
-	if (ft_strstr(STROP, line) == NULL)	
-	{
-		ft_printf("Operation \"%s\" is not valid.\n", line);
-		exit(0);
-	}
-}
-
-t_coor	ft_draw_line_source(t_coor *delta,
-		t_coor *sign, t_coor point1, t_coor point2)
-{
-	(*delta).x = ABS((point2.x - point1.x));
-	(*delta).y = ABS((point2.y - point1.y));
-	(*sign).x = (point1.x < point2.x) ? 1 : -1;
-	(*sign).y = (point1.y < point2.y) ? 1 : -1;
-	return (point1);
-}
-
-void	put_pixel_adr(t_ch *ch, t_coor point)
-{
-	int i;
-
-	if (point.x >= WIDTH || point.y >= HEIGHT || point.x <= 0 || point.y <= 0)
-		return ;
-	i = (point.x * ch->bits_adr / 8) + (point.y * ch->size_adr);
-	ch->data_adr[i] = point.color;
-	ch->data_adr[++i] = point.color >> 8;
-	ch->data_adr[++i] = point.color >> 16;
-	ch->data_adr[++i] = 0;
-}
-
-void	ft_draw_line(t_ch *ch, t_coor point1, t_coor point2, int color)
-{
-	t_coor	delta;
-	t_coor	sign;
-	t_coor	point;
-	int		error;
-	int		error2;
-
-	point = ft_draw_line_source(&delta, &sign, point1, point2);
-	error = delta.x - delta.y;
-	put_pixel_adr(ch, point2);
-	//mlx_pixel_put(ch->mlx, ch->window, point2.x, point2.y, 0xff00);
-	while (point.x != point2.x || point.y != point2.y)
-	{
-		put_pixel_adr(ch, point);
-		//mlx_pixel_put(ch->mlx, ch->window, point.x, point.y, 0xff00);
-		error2 = error * 2;
-		if (error2 > -delta.y)
-		{
-			error -= delta.y;
-			point.x += sign.x;
-		}
-		if (error2 < delta.x)
-		{
-			error += delta.x;
-			point.y += sign.y;
-		}
-		point.color = color;//get_color(point, point1, point2, delta);
-	}
-}
-
-void	clear_image(t_ch *fdf)
-{
-	char	*temp;
-	int		i;
-
-	temp = fdf->data_adr;
-	i = -1;
-	while (++i < WIDTH * 4 * HEIGHT)
-		temp[i] = 0;
-}
-
-void	put_stack(t_ch *ch, t_stack *stack, int start_x)
-{
-	t_coor point1;
-	t_coor point2;
-	t_node *node;
-
-	node = stack->top;
-	point1.x = start_x;
-	point1.y = STARTY;
-	point2.y = STARTY;
-	while (node)
-	{
-		point2.x = node->data + start_x;
-		ft_draw_line(ch, point1, point2, 0xff00);
-		node = node->next;
-		point1.y += 2;
-		point2.y += 2;
-	}
-}
-
-void	mlx_put_stacks(t_ch *ch)
-{
-	t_coor point1;
-	t_coor point2;
-
-	point1.x = 0;
-	point1.y = STARTY;
-	point2.x = WIDTH;
-	point2.y = STARTY;
-	put_stack(ch, &ch->ps.stack_a, 100);
-	put_stack(ch, &ch->ps.stack_b, HALFWID);
-	ft_draw_line(ch, point1, point2, 0xffff);
-	mlx_put_image_to_window(ch->mlx, ch->window, ch->img_ptr, 0, 0);
-	mlx_string_put(ch->mlx, ch->window, 130, STARTY - 30, 0xffff, "Stack A");
-	mlx_string_put(ch->mlx, ch->window, HALFWID + 30, STARTY - 30, 0xffff, "Stack B");
-}
-
-void	work_perations(t_ps *ps, char *line)
-{
-	if (!ft_strcmp(line, "pa"))
-		op_push(&ps->stack_b, &ps->stack_a);
-	else if (!ft_strcmp(line, "pb"))
-		op_push(&ps->stack_a, &ps->stack_b);
-	else if (!ft_strcmp(line, "ra"))
-		op_rotate(&ps->stack_a);
-	else if (!ft_strcmp(line, "rb"))
-		op_rotate(&ps->stack_b);
-	else if (!ft_strcmp(line, "rr"))
-	{
-		op_rotate(&ps->stack_a);
-		op_rotate(&ps->stack_b);
-	}
-	else if (!ft_strcmp(line, "rra"))
-		op_reverse_rotate(&ps->stack_a);
-	else if (!ft_strcmp(line, "rrb"))
-		op_reverse_rotate(&ps->stack_b);
-	else if (!ft_strcmp(line, "rrr"))
-	{
-		op_reverse_rotate(&ps->stack_a);
-		op_reverse_rotate(&ps->stack_b);
-	}
-	else if (!ft_strcmp(line, "sa"))
-		op_swap(&ps->stack_a);
-	else if (!ft_strcmp(line, "sb"))
-		op_swap(&ps->stack_b);
-	else if (!ft_strcmp(line, "ss"))
-	{
-		op_swap(&ps->stack_a);
-		op_swap(&ps->stack_b);
-	}
-	else if (line != NULL)
-	{
-		ft_printf("Operation \"%s\" is not valid.\n", line);
-		exit(0);
-	}
-}
-
-void	stack_is_sort(t_ps *ps)
-{
-	t_node *node;
-
-	node = ps->stack_a.top;
-	while (node && node->next != NULL)
-	{
-		if (node->data > node->next->data)
-		{
-			print_node(&ps->stack_a, &ps->stack_b);
-			sys_err("KO!\n");
-		}
-		node = node->next;
-	}
-	print_node(&ps->stack_a, &ps->stack_b);
-	ft_putendl("OK");
-}
-
-int		work_operators(t_ch *ch)
-{
-	//mlx_clear_window(ch->mlx, ch->window);
-	//usleep(10000);
-	clear_image(ch);
-	if (ch->iter == NULL)
-		return (0);
-	work_perations(&ch->ps, ch->iter->op);
-	mlx_put_stacks(ch);
-	ch->iter = ch->iter->next;
-	if (ch->iter == NULL)
-	{
-		stack_is_sort(&ch->ps);
-		delete_stack(&ch->ps.stack_a);
-		delete_stack(&ch->ps.stack_b);
-		return (0);
-		sys_err("Done!\n");
-	}
-	return (0);
-}
-
-t_op	*create_node_op(char *line)
-{
-	t_op *node;
-
-	if (!(node = (t_op*)malloc(sizeof(t_op))))
-		sys_err("Error malloc\n");
-	strcpy(node->op, line);
-	node->next = NULL;	
-	return (node);
-}
 
 void	add_node_op(t_ch *ch, char *line)
 {
-	t_op *tmp;
-	t_op *it;
+	t_op	*tmp;
+	t_op	*it;
 
 	if (ch->op == NULL)
 	{
@@ -231,12 +24,11 @@ void	add_node_op(t_ch *ch, char *line)
 		return ;
 	}
 	it = ch->op;
-	while(it->next)
+	while (it->next)
 		it = it->next;
 	tmp = create_node_op(line);
 	it->next = tmp;
 }
-
 
 void	read_input(t_ch *ch)
 {
@@ -247,9 +39,6 @@ void	read_input(t_ch *ch)
 	{
 		check(line);
 		add_node_op(ch, line);
-		//work_perations(&ch->ps, line);
-		//ft_printf("<%s\n", line);
-		//mlx_string_put(ch->mlx, ch->window, i, i, 0xff00, line);
 		ft_strdel(&line);
 	}
 	if (ch->op == NULL)
@@ -258,7 +47,6 @@ void	read_input(t_ch *ch)
 		exit(0);
 	}
 	ft_strdel(&line);
-	//stack_is_sort(&ch->ps);
 }
 
 void	print_op(t_ch *ch)
@@ -286,15 +74,12 @@ int		main(int ac, char **av)
 
 	if (ac < 2)
 		sys_err("To few arguments.\n");
-	//sleep(10);
 	init(&ch.ps);
 	init_ch(&ch);
 	processing_args(&ch.ps, ac, av);
 	read_input(&ch);
-	//print_op(&ch);
 	mlx_key_hook(ch.window, press_key, &ch);
 	mlx_loop_hook(ch.mlx, work_operators, &ch);
-	//mlx_key_hook(ch.window, work_operators, &ch);
 	mlx_loop(ch.mlx);
 	return (0);
 }

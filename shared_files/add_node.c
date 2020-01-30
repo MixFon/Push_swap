@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   add_node.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/30 11:48:31 by widraugr          #+#    #+#             */
+/*   Updated: 2020/01/30 11:49:20 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/push_swap.h"
 
 void	init(t_ps *ps)
@@ -18,7 +30,7 @@ void	init(t_ps *ps)
 	ps->stack_b.bl_rr = 0;
 }
 
-void		check_arg(char *arg)
+void	check_arg(char *arg)
 {
 	int neg;
 	int plus;
@@ -55,7 +67,7 @@ t_node	*create_node(int data, int *count)
 
 	if (!(node = (t_node*)malloc(sizeof(t_node))))
 		sys_err("Error malloc\n");
-	node->next = NULL;	
+	node->next = NULL;
 	node->data = data;
 	node->number = *count;
 	(*count)++;

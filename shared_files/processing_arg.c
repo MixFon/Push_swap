@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   processing_arg.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/30 11:50:38 by widraugr          #+#    #+#             */
+/*   Updated: 2020/01/30 11:52:36 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/push_swap.h"
 
 int		check_number(char *arg)
@@ -10,7 +22,7 @@ int		check_number(char *arg)
 	i = 0;
 	bl = (*arg == '-' ? -1 : 1);
 	if (*arg == '-' || *arg == '+')
-	   arg++;	
+		arg++;
 	while (*arg != '\0')
 	{
 		data = data * 10 + (*arg - '0');
@@ -37,8 +49,6 @@ void	infill_stack(t_ps *ps, char **av)
 		add_node(ps, num);
 		av++;
 	}
-	//print_sort_arr(ps);
-	//print_node(&ps->stack_a, &ps->stack_b);
 }
 
 void	dell_arr(char ***arr)

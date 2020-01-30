@@ -6,20 +6,27 @@
 #    By: widraugr <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/29 13:07:44 by widraugr          #+#    #+#              #
-#    Updated: 2019/12/06 10:10:28 by widraugr         ###   ########.fr        #
+#    Updated: 2020/01/30 12:48:50 by widraugr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAMEPS = push_swap
 
-NAMECK = checker
+NAMECH = checker
 
 LIBDIR = ./libft
 
-PS_C = main.c\
-		 sort_three_element.c
+PS_C = sort_three_element.c\
+	   determine_minimal_el.c\
+	   pa_pb_ra_rb_rr.c\
+	   search_min_el.c\
+	   rra_rrb_rrr_sa_sb.c\
+	   main.c
 
-CH_C = checker.c
+CH_C = checker.c\
+	   create_node_add.c\
+	   ft_drow_line.c\
+	   work_operations.c
 
 SH_C = add_node.c\
 	   processing_arg.c\
@@ -53,10 +60,9 @@ OBJSH = $(addprefix $(DIROBJ), $(SH_C:.c=.o))
 all : $(NAMEPS) $(NAMECH)
 
 $(NAMEPS): $(DIROBJ) $(OBJSH) $(OBJCH) $(OBJ) 
-#	make -C $(LIBDIR)
+	make -C $(LIBDIR)
+	gcc $(FLAGS) $(OBJCH) $(OBJSH) $(FLAGSMLX) $(FLIB) -o $(NAMECH)
 	gcc $(FLAGS) $(OBJ) $(OBJSH) $(FLIB) -o $(NAMEPS)
-	gcc $(FLAGS) $(OBJCH) $(OBJSH) $(FLAGSMLX) $(FLIB) -o $(NAMECK)
-	make clean -C $(LIBDIR)
 
 $(DIROBJ)%.o : $(DIRPS)%.c
 	gcc -g $(FLAGS) -c $< -o $@
@@ -75,6 +81,7 @@ clean:
 	
 fclean: clean
 	/bin/rm -f $(NAMEPS)
-#	make fclean -C $(LIBDIR)
+	/bin/rm -f $(NAMECH)
+	make fclean -C $(LIBDIR)
 	
 re: fclean all 

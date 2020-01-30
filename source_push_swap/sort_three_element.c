@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort_three_element.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/30 10:49:54 by widraugr          #+#    #+#             */
+/*   Updated: 2020/01/30 11:48:15 by widraugr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/push_swap.h"
 
 void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
@@ -37,10 +49,9 @@ void	sort_two_element(t_ps *ps, t_stack *stack)
 void	sort_elemts(t_ps *ps, t_stack *stack)
 {
 	if (stack->count == 1)
-		return;
+		return ;
 	else if (stack->count == 2)
 		sort_two_element(ps, stack);
 	else if (stack->count == 3)
 		sort_three_elemts_bott(ps, stack);
-
 }
