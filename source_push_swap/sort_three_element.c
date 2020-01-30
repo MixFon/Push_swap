@@ -27,3 +27,20 @@ void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
 		op_rra(ps);
 	}
 }
+
+void	sort_two_element(t_ps *ps, t_stack *stack)
+{
+	if (stack->top->data > stack->top->next->data)
+		op_sa(ps);
+}
+
+void	sort_elemts(t_ps *ps, t_stack *stack)
+{
+	if (stack->count == 1)
+		return;
+	else if (stack->count == 2)
+		sort_two_element(ps, stack);
+	else if (stack->count == 3)
+		sort_three_elemts_bott(ps, stack);
+
+}

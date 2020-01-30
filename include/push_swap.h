@@ -84,6 +84,7 @@ void	move_all_to_stack_a(t_ps *ps);
 void	to_top_with_rr(t_ps *ps);
 void	sort_three_elemts(t_ps *ps, t_stack *stack);
 void	sort_three_elemts_bott(t_ps *ps, t_stack *stack);
+void	sort_elemts(t_ps *ps, t_stack *stack);
 void	print_node(t_stack *stack_a, t_stack *stack_b);
 void	print_sort_arr(t_ps *ps);
 /*
