@@ -75,10 +75,7 @@ void	check_flag_v(t_ch *ch, int ac, char **av)
 	ch->flag_v = 0;
 	a = ac;
 	if (!ft_strncmp(av[1], "-v", 2))
-	{
 		ch->flag_v = 1;
-		//ft_putendl("flag");
-	}
 }
 
 int		main(int ac, char **av)
