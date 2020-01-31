@@ -16,7 +16,7 @@ int		is_cycle_sort(t_ps *ps)
 {
 	t_node	*node;
 
-	determine_minimal_el(ps);
+	determine_minimal_el_a(ps);
 	node = ps->stack_a.top;
 	while (node && node->next)
 	{
@@ -37,8 +37,8 @@ void	empty_stack_b(t_ps *ps)
 
 	while (ps->stack_b.count > 0)
 	{
-		determine_minimal_el(ps);
-		min_el = search_min_el(ps);
+		determine_minimal_el_a(ps);
+		min_el = search_min_el_b(ps);
 		move_min_el(ps);
 		op_pa(ps);
 		recount_number_stack(ps->stack_a.top);
@@ -65,8 +65,10 @@ void	algoritm(t_ps *ps)
 		recount_number_stack(ps->stack_b.top);
 	}
 	sort_elemts(ps, &ps->stack_a);
+	//ft_putendl("----->");
 	empty_stack_b(ps);
-	determine_minimal_el(ps);
+	//ft_putendl("-----<");
+	determine_minimal_el_a(ps);
 	final_sort(ps);
 	delete_stack(&ps->stack_a);
 	delete_stack(&ps->stack_b);

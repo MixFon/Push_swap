@@ -48,7 +48,7 @@ void	move_all_to_stack_a(t_ps *ps)
 		op_pa(ps);
 }
 
-void	determine_minimal_el(t_ps *ps)
+void	determine_minimal_el_a(t_ps *ps)
 {
 	t_node *node;
 

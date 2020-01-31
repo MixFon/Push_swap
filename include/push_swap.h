@@ -127,7 +127,7 @@ void				op_ss(t_ps *ps);
 void				recount_number_stack(t_node *node);
 void				to_top_with_rr(t_ps *ps);
 void				move_all_to_stack_a(t_ps *ps);
-void				determine_minimal_el(t_ps *ps);
+void				determine_minimal_el_a(t_ps *ps);
 /*
 ** File source_push_swap/search_min_el.c
 */
@@ -135,7 +135,7 @@ void				move_min_el(t_ps *ps);
 void				stack_bl(t_stack *stack, int bl_r, int bl_rr);
 int					count_steps_to_top(t_stack *stack, int data);
 int					count_steps(t_ps *ps, int data);
-t_node				*search_min_el(t_ps *ps);
+t_node				*search_min_el_b(t_ps *ps);
 /*
 ** File source_push_swap/sort_elemts.c
 */
