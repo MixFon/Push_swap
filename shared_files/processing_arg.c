@@ -84,6 +84,8 @@ void	processing_args(t_ps *ps, int ac, char **av)
 	char	**args;
 	int		count_args;
 
+	if (ac == 1)
+		exit(0);
 	if (ac > 2)
 		infill_stack(ps, av + 1);
 	else

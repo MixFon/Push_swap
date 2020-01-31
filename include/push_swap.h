@@ -17,7 +17,7 @@
 # include "limits.h"
 # include "../minilibx_macos/mlx.h"
 
-# define STROP		"rararbrrpbrraparrbrrrsasbss"
+# define STROP		"rarbrrpbrraparrbrrrsasbss"
 # define WIDTH		1500
 # define HEIGHT		1200
 
@@ -69,6 +69,7 @@ typedef struct		s_ch
 	int				size_adr;
 	int				endian;
 	char			*data_adr;
+	int				flag_v;
 }					t_ch;
 
 typedef struct		s_coor
@@ -169,7 +170,7 @@ void				mlx_put_stacks(t_ch *ch);
 void				work_perations_next(t_ps *ps, char *line);
 void				work_perations(t_ps *ps, char *line);
 /*
-** File source_checker/work_perations.c
+** File source_checker/create_node_op.c
 */
 void				stack_is_sort(t_ps *ps);
 int					work_operators(t_ch *ch);

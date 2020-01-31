@@ -19,25 +19,19 @@ void	sort_three_elemts_bott(t_ps *ps, t_stack *stack)
 		return ;
 	else if (stack->bott->data > stack->top->data &&
 			stack->bott->data < stack->top->next->data)
-	{
-		op_rra(ps);
 		op_sa(ps);
-	}
 	else if (stack->top->data > stack->top->next->data &&
 			stack->top->data < stack->bott->data)
 		op_sa(ps);
 	else if (stack->top->data < stack->top->next->data &&
 			stack->top->data > stack->bott->data)
-		op_rra(ps);
+		return ;
 	else if (stack->bott->data > stack->top->next->data &&
 			stack->bott->data < stack->top->data)
-		to_top_with_rr(ps);
+		return ;
 	else if (stack->top->next->data < stack->top->data &&
 			stack->top->next->data > stack->bott->data)
-	{
 		op_sa(ps);
-		op_rra(ps);
-	}
 }
 
 void	sort_two_element(t_ps *ps, t_stack *stack)

@@ -30,17 +30,13 @@ int		count_steps_to_top(t_stack *stack, int data)
 	{
 		if (node->data == data)
 		{
-			//ft_printf("data = [%d] node->data = [%d] node->number = {%d}\n",
-			//		data, node->data, node->number);
 			if (node->number <= (stack->count / 2))
 			{
-				//ft_putendl("/2");
 				res = node->number;
 				stack_bl(stack, 1, 0);
 			}
 			else
 			{
-				//ft_putendl("!!");
 				res = (stack->count - node->number);
 				stack_bl(stack, 0, 1);
 			}

@@ -65,9 +65,7 @@ void	algoritm(t_ps *ps)
 		recount_number_stack(ps->stack_b.top);
 	}
 	sort_elemts(ps, &ps->stack_a);
-	//ft_putendl("----->");
 	empty_stack_b(ps);
-	//ft_putendl("-----<");
 	determine_minimal_el_a(ps);
 	final_sort(ps);
 	delete_stack(&ps->stack_a);

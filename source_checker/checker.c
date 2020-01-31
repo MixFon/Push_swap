@@ -68,18 +68,41 @@ int		press_key(int key)
 	return (0);
 }
 
+void	check_flag_v(t_ch *ch, int ac, char **av)
+{
+	int a;
+
+	ch->flag_v = 0;
+	a = ac;
+	if (!ft_strncmp(av[1], "-v", 2))
+	{
+		ch->flag_v = 1;
+		//ft_putendl("flag");
+	}
+}
+
 int		main(int ac, char **av)
 {
 	t_ch	ch;
 
 	if (ac < 2)
 		sys_err("To few arguments.\n");
+	check_flag_v(&ch, ac, av);
 	init(&ch.ps);
-	init_ch(&ch);
-	processing_args(&ch.ps, ac, av);
+	if (ch.flag_v)
+		processing_args(&ch.ps, ac - 1, av + 1);
+	else
+		processing_args(&ch.ps, ac, av);
 	read_input(&ch);
-	mlx_key_hook(ch.window, press_key, &ch);
-	mlx_loop_hook(ch.mlx, work_operators, &ch);
-	mlx_loop(ch.mlx);
+	if (ch.flag_v)
+	{
+		init_ch(&ch);
+		mlx_key_hook(ch.window, press_key, &ch);
+		mlx_loop_hook(ch.mlx, work_operators, &ch);
+		mlx_loop(ch.mlx);
+	}
+	else
+		while (1)
+			work_operators(&ch);
 	return (0);
 }

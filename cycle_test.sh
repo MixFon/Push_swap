@@ -1,8 +1,7 @@
 #!/bin/bash
 
-for ((i = 1; i < $1; i++))
+for ((i = 1; i < $3; i++))
 do
-ARG=`ruby -e "puts (1..5).to_a.shuffle.join(' ')"`
-./push_swap $ARG | wc -l
-echo $ARG
-done > temp.txt
+ARG=`ruby -e "puts ($1..$2).to_a.shuffle.join(' ')"`
+./push_swap $ARG | ./checker $ARG
+done

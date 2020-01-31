@@ -21,30 +21,37 @@ void	stack_is_sort(t_ps *ps)
 	{
 		if (node->data > node->next->data)
 		{
-			print_node(&ps->stack_a, &ps->stack_b);
-			sys_err("KO!\n");
+			//print_node(&ps->stack_a, &ps->stack_b);
+			sys_err("KO\n");
 		}
 		node = node->next;
 	}
-	print_node(&ps->stack_a, &ps->stack_b);
+	if (ps->stack_b.count != 0)
+		sys_err("KO\n");
+	//print_node(&ps->stack_a, &ps->stack_b);
 	ft_putendl("OK");
 }
 
 int		work_operators(t_ch *ch)
 {
-	clear_image(ch);
 	if (ch->iter == NULL)
 		return (0);
 	work_perations(&ch->ps, ch->iter->op);
-	mlx_put_stacks(ch);
+	if (ch->flag_v)
+	{
+		clear_image(ch);
+		mlx_put_stacks(ch);
+	}
 	ch->iter = ch->iter->next;
 	if (ch->iter == NULL)
 	{
 		stack_is_sort(&ch->ps);
 		delete_stack(&ch->ps.stack_a);
 		delete_stack(&ch->ps.stack_b);
-		return (0);
-		sys_err("Done!\n");
+		if (ch->flag_v)
+			return (0);
+		exit(0);
+		//sys_err("Done!\n");
 	}
 	return (0);
 }
