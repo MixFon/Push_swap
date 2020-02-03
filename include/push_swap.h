@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 11:24:59 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 13:19:55 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/02/03 09:10:49 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ void				work_perations(t_ps *ps, char *line);
 /*
 ** File source_checker/create_node_op.c
 */
+void				check_flag_v(t_ch *ch, int ac, char **av);
 void				stack_is_sort(t_ps *ps);
 int					work_operators(t_ch *ch);
 t_op				*create_node_op(char *line);

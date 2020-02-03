@@ -6,11 +6,22 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 11:34:30 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 11:40:44 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/02/03 09:10:22 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/push_swap.h"
+
+void	check_flag_v(t_ch *ch, int ac, char **av)
+{
+	int a;
+
+	ch->flag_v = 0;
+	ch->op = NULL;
+	a = ac;
+	if (!ft_strncmp(av[1], "-v", 2))
+		ch->flag_v = 1;
+}
 
 void	stack_is_sort(t_ps *ps)
 {
@@ -20,15 +31,11 @@ void	stack_is_sort(t_ps *ps)
 	while (node && node->next != NULL)
 	{
 		if (node->data > node->next->data)
-		{
-			//print_node(&ps->stack_a, &ps->stack_b);
 			sys_err("KO\n");
-		}
 		node = node->next;
 	}
 	if (ps->stack_b.count != 0)
 		sys_err("KO\n");
-	//print_node(&ps->stack_a, &ps->stack_b);
 	ft_putendl("OK");
 }
 
@@ -51,7 +58,6 @@ int		work_operators(t_ch *ch)
 		if (ch->flag_v)
 			return (0);
 		exit(0);
-		//sys_err("Done!\n");
 	}
 	return (0);
 }

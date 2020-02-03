@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 11:27:07 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 13:12:34 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/02/03 08:54:12 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	init_ch(t_ch *ch)
 	ch->bits_adr = 4;
 	ch->size_adr = WIDTH;
 	ch->endian = 0;
-	ch->op = NULL;
 	ch->mlx = mlx_init();
 	ch->window = mlx_new_window(ch->mlx, WIDTH, HEIGHT, "Push swap");
 	ch->img_ptr = mlx_new_image(ch->mlx, WIDTH, HEIGHT);

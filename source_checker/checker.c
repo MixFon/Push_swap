@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 11:25:50 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 11:44:20 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/02/03 09:32:55 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,6 @@ int		press_key(int key)
 	if (key == 53)
 		sys_err("Normal exit.\n");
 	return (0);
-}
-
-void	check_flag_v(t_ch *ch, int ac, char **av)
-{
-	int a;
-
-	ch->flag_v = 0;
-	a = ac;
-	if (!ft_strncmp(av[1], "-v", 2))
-		ch->flag_v = 1;
 }
 
 int		main(int ac, char **av)

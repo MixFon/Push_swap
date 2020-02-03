@@ -6,7 +6,7 @@
 /*   By: widraugr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/30 10:44:13 by widraugr          #+#    #+#             */
-/*   Updated: 2020/01/30 11:47:23 by widraugr         ###   ########.fr       */
+/*   Updated: 2020/02/03 09:35:01 by widraugr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int		count_steps_to_top(t_stack *stack, int data)
 	t_node	*node;
 	int		res;
 
-	res = 0;
 	node = stack->top;
 	recount_number_stack(stack->top);
 	while (node)
